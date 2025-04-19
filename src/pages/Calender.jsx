@@ -212,7 +212,7 @@ const RentalRemindersPage = () => {
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header Section */}
         <motion.div
-          className="bg-gradient-to-r from-purple-100 via-purple-50 to-indigo-50 rounded-xl p-6 mb-8 shadow-sm"
+          className="bg-gradient-to-r from-purple-100 via-purple-100 to-indigo-50 rounded-xl p-6 mb-8 shadow-sm"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -484,7 +484,7 @@ const RentalRemindersPage = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            <div className="bg-purple-200 rounded-xl shadow-sm overflow-hidden border border-gray-100">
               <div className="p-5 border-b border-gray-100 flex justify-between items-center">
                 <h2 className="font-bold text-lg text-gray-800">Upcoming Reminders</h2>
                 <div className="flex items-center">
