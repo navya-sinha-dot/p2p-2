@@ -1,64 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Heart, ChevronRight, ArrowRight, Gift, Clock, Tag} from "lucide-react";
+import {
+  Trash2,
+  Heart,
+  ChevronRight,
+  ArrowRight,
+  Gift,
+  Clock,
+  Tag,
+} from "lucide-react";
 import Layout from "../components/layout/Layout";
-
-// Enhanced wishlist data
-const wishlistItems = [
-  {
-    id: "1",
-    name: "Kids Party Setup for Birthday (golden & blue)",
-    price: 49,
-    image: "https://images.pexels.com/photos/796605/pexels-photo-796605.jpeg",
-    location: "Versova, Mumbai",
-    category: "event",
-    featured: true,
-  },
-  {
-    id: "2",
-    name: "Professional DSLR Camera Kit",
-    price: 299,
-    image: "https://images.pexels.com/photos/243757/pexels-photo-243757.jpeg",
-    location: "Andheri, Mumbai",
-    category: "electronics",
-    discount: "15% OFF",
-  },
-  {
-    id: "3",
-    name: "Mountain Bike - 21 Speed Shimano",
-    price: 125,
-    image: "https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg",
-    location: "Bandra, Mumbai",
-    category: "fitness",
-  },
-  {
-    id: "4",
-    name: "Portable Bluetooth Speaker JBL Flip 5",
-    price: 75,
-    image: "https://images.pexels.com/photos/1279107/pexels-photo-1279107.jpeg",
-    location: "Powai, Mumbai",
-    category: "electronics",
-    limited: true,
-  },
-  {
-    id: "9",
-    name: "Professional Event Lighting System",
-    price: 120,
-    image: "https://images.pexels.com/photos/2263410/pexels-photo-2263410.jpeg",
-    location: "Colaba, Mumbai",
-    category: "event",
-  },
-  {
-    id: "10",
-    name: "High-End Camping Tent (4-Person)",
-    price: 85,
-    image: "https://images.pexels.com/photos/2582818/pexels-photo-2582818.jpeg",
-    location: "Goregaon, Mumbai",
-    category: "outdoor",
-    discount: "10% OFF",
-  },
-];
+import { useWishlist } from "../hooks/useWishlist";
 
 // Recommended products based on wishlist categories
 const recommendedProducts = [
@@ -150,11 +103,9 @@ const categoryColors = {
 
 const Wishlist = () => {
   const navigate = useNavigate();
-  const [items, setItems] = useState(wishlistItems);
+  const wishlist = useWishlist();
 
-  const handleRemoveFromWishlist = (id) => {
-    setItems(items.filter(item => item.id !== id));
-  };
+  const handleRemoveFromWishlist = (id) => {};
 
   const ItemCard = ({ item, isWishlist = false }) => (
     <motion.div
@@ -163,7 +114,8 @@ const Wishlist = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}>
+      whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+    >
       <div className="relative">
         <img
           src={item.image}
@@ -171,7 +123,11 @@ const Wishlist = () => {
           className="w-full h-48 object-cover"
         />
         {item.category && (
-          <div className={`absolute top-2 left-2 ${categoryColors[item.category] || 'bg-gray-700'} text-white text-xs py-1 px-2 rounded-full`}>
+          <div
+            className={`absolute top-2 left-2 ${
+              categoryColors[item.category] || "bg-gray-700"
+            } text-white text-xs py-1 px-2 rounded-full`}
+          >
             {item.category}
           </div>
         )}
@@ -195,13 +151,15 @@ const Wishlist = () => {
         <div className="flex justify-between mb-2">
           <h3
             className="font-medium text-lg cursor-pointer hover:text-purple-600 line-clamp-2"
-            onClick={() => navigate(`/product/${item.id}`)}>
+            onClick={() => navigate(`/product/${item.id}`)}
+          >
             {item.name}
           </h3>
           {isWishlist ? (
             <button
               onClick={() => handleRemoveFromWishlist(item.id)}
-              className="text-gray-400 hover:text-red-500">
+              className="text-gray-400 hover:text-red-500"
+            >
               <Trash2 size={18} />
             </button>
           ) : (
@@ -211,13 +169,27 @@ const Wishlist = () => {
           )}
         </div>
 
-        <p className="text-gray-500 text-sm mb-2">
-          ₹ {item.price} per week
-        </p>
+        <p className="text-gray-500 text-sm mb-2">₹ {item.price} per week</p>
         <p className="text-gray-500 text-xs flex items-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-3 w-3 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+            />
           </svg>
           {item.location}
         </p>
@@ -225,9 +197,14 @@ const Wishlist = () => {
         <div className="mt-auto pt-4">
           <motion.button
             onClick={() => navigate(`/product/${item.id}`)}
-            className={`w-full py-2 ${isWishlist ? 'bg-purple-600' : 'bg-gradient-to-r from-purple-300 to-indigo-300'} text-white rounded-md text-sm font-medium flex justify-center items-center`}
+            className={`w-full py-2 ${
+              isWishlist
+                ? "bg-purple-600"
+                : "bg-gradient-to-r from-purple-600 to-indigo-500"
+            } text-white rounded-md text-sm font-medium flex justify-center items-center`}
             whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}>
+            whileTap={{ scale: 0.98 }}
+          >
             View Details
             <ArrowRight size={16} className="ml-2" />
           </motion.button>
@@ -238,14 +215,19 @@ const Wishlist = () => {
 
   const SectionHeader = ({ title, actionText, onClick, color = "purple" }) => (
     <div className="flex justify-between items-center mb-6">
-      <h2 className={`text-xl font-semibold text-${color}-700 flex items-center`}>
-        <span className={`w-2 h-6 bg-${color}-500 rounded mr-2 inline-block`}></span>
+      <h2
+        className={`text-xl font-semibold text-${color}-700 flex items-center`}
+      >
+        <span
+          className={`w-2 h-6 bg-${color}-500 rounded mr-2 inline-block`}
+        ></span>
         {title}
       </h2>
       {actionText && (
-        <button 
+        <button
           onClick={onClick}
-          className={`text-${color}-600 hover:text-${color}-800 text-sm font-medium flex items-center`}>
+          className={`text-${color}-600 hover:text-${color}-800 text-sm font-medium flex items-center`}
+        >
           {actionText}
           <ChevronRight size={16} />
         </button>
@@ -256,44 +238,37 @@ const Wishlist = () => {
   return (
     <Layout showSidebar={false}>
       <div className="max-w-7xl mx-auto px-4 py-8">
-         {/* Header Section */}
-                <motion.div
-                  className="bg-gradient-to-r from-purple-100 via-purple-100 to-indigo-50 rounded-xl p-6 mb-8 shadow-sm"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                    <div className="bg-white p-3 rounded-lg shadow-md">
-                <Heart className="w-6 h-6 text-purple-600" />
-              </div>
-                      <div>
-                        <h1 className="text-2xl font-bold text-gray-800">Your Wishlist</h1>
-                        <p className="text-gray-600 mt-1">Press heart to unlock a world of rentals</p>
-                      </div>
-                    </div>
-                    <div className="hidden md:flex items-center space-x-3">
-                    
-                    </div>
-                  </div>
-                </motion.div>
+        <motion.div
+          className="flex items-center justify-between mb-6"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-300 bg-clip-text text-transparent">
+            Your Wishlist
+          </h1>
+          <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full font-medium">
+            {wishlist.length} items
+          </span>
+        </motion.div>
 
-        {items.length === 0 ? (
+        {wishlist.length === 0 ? (
           <motion.div
             className="text-center py-12"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}>
-            <img 
-              src="https://images.pexels.com/photos/7957739/pexels-photo-7957739.jpeg" 
-              alt="Empty wishlist" 
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <img
+              src="https://images.pexels.com/photos/7957739/pexels-photo-7957739.jpeg"
+              alt="Empty wishlist"
               className="mx-auto w-48 h-48 object-cover rounded-full mb-6 opacity-70"
             />
             <p className="text-gray-500 mb-6">Your wishlist is empty</p>
             <button
               onClick={() => navigate("/home")}
-              className="px-6 py-3 bg-gradient-to-r from-purple-300 to-indigo-400 text-white rounded-md font-medium hover:from-purple-700 hover:to-indigo-600 transition-colors">
+              className="px-6 py-3 bg-gradient-to-r from-purple-300 to-indigo-400 text-white rounded-md font-medium hover:from-purple-700 hover:to-indigo-600 transition-colors"
+            >
               Browse Items
             </button>
           </motion.div>
@@ -303,12 +278,23 @@ const Wishlist = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}>
-              {items.map((item) => (
+              transition={{ duration: 0.5 }}
+            >
+              {wishlist.map((item) => (
                 <ItemCard key={item.id} item={item} isWishlist={true} />
               ))}
             </motion.div>
-           
+
+            <div className="flex justify-center mt-6">
+              <motion.button
+                className="flex items-center text-purple-600 font-medium hover:text-purple-800"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Gift size={16} className="mr-1" />
+                Save items for later
+              </motion.button>
+            </div>
           </>
         )}
 
@@ -318,7 +304,9 @@ const Wishlist = () => {
             <div className="w-full border-t border-gray-200"></div>
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-white px-4 text-sm text-gray-500">Discover More</span>
+            <span className="bg-white px-4 text-sm text-gray-500">
+              Discover More
+            </span>
           </div>
         </div>
 
@@ -327,21 +315,18 @@ const Wishlist = () => {
           className="mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}>
-          <SectionHeader 
-            title="Recommended for you" 
-            actionText="View all" 
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <SectionHeader
+            title="Recommended for you"
+            actionText="View all"
             onClick={() => navigate("/home")}
             color="purple"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {recommendedProducts.map((product) => (
-              <ItemCard 
-                key={product.id} 
-                item={product} 
-                isWishlist={false}
-              />
+              <ItemCard key={product.id} item={product} isWishlist={false} />
             ))}
           </div>
         </motion.div>
@@ -351,41 +336,44 @@ const Wishlist = () => {
           className="mb-12"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}>
-          <SectionHeader 
-            title="Trending Now" 
-            actionText="Explore all" 
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <SectionHeader
+            title="Trending Now"
+            actionText="Explore all"
             onClick={() => navigate("/trending")}
             color="pink"
           />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {trendingProducts.map((product) => (
-              <ItemCard 
-                key={product.id} 
-                item={product} 
-                isWishlist={false}
-              />
+              <ItemCard key={product.id} item={product} isWishlist={false} />
             ))}
           </div>
         </motion.div>
 
         {/* Quick actions */}
-        <motion.div 
+        <motion.div
           className="mt-12 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-8 text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}>
+          transition={{ duration: 0.5, delay: 0.5 }}
+        >
           <div className="max-w-2xl mx-auto">
-            <h3 className="text-xl font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent mb-3">Looking for something specific?</h3>
-            <p className="text-gray-600 mb-6">We can help you find the perfect rental items for your needs and budget. Browse our extensive collection organized by categories.</p>
+            <h3 className="text-xl font-semibold bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent mb-3">
+              Looking for something specific?
+            </h3>
+            <p className="text-gray-600 mb-6">
+              We can help you find the perfect rental items for your needs and
+              budget. Browse our extensive collection organized by categories.
+            </p>
             <div className="flex justify-center gap-4 flex-wrap">
               <button
                 onClick={() => navigate("/home")}
-                className="px-6 py-3 bg-gradient-to-r from-purple-300 to-indigo-300 text-white rounded-md font-medium hover:from-purple-700 hover:to-purple-800 transition-colors">
+                className="px-6 py-3 bg-gradient-to-r from-purple-300 to-indigo-300 text-white rounded-md font-medium hover:from-purple-700 hover:to-purple-800 transition-colors"
+              >
                 Browse Categories
               </button>
-              
             </div>
           </div>
         </motion.div>
