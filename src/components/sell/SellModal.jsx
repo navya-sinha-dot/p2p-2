@@ -47,7 +47,7 @@ const SellModal = () => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
-        <div className="flex justify-between items-center border-b p-4 bg-pink-600 text-white">
+        <div className="flex justify-between items-center border-b p-4 bg-purple-600 text-white">
           <h3 className="text-lg font-medium">List an item for rent</h3>
           <button
             onClick={closeSellModal}
@@ -91,7 +91,7 @@ const SellModal = () => {
                       type="button"
                       className={`py-2 px-3 rounded-md border text-left transition-colors ${
                         sellFormData.category === category.id
-                          ? "border-purple-500 bg-pink-50 text-purple-700"
+                          ? "border-purple-500 bg-purple-50 text-purple-700"
                           : "border-gray-300 hover:bg-gray-50"
                       }`}
                       onClick={() =>

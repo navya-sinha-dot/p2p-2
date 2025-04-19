@@ -1,52 +1,95 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar as CalendarIcon,
   ChevronLeft,
   ChevronRight,
+  Bell,
+  Clock,
+  AlertCircle,
+  CheckCircle2,
+  ArrowRight,
+  Calendar,
 } from "lucide-react";
 import Layout from "../components/layout/Layout";
 
-// Mock reminders data
+// Enhanced mock reminders data with more realistic details
 const reminders = [
   {
     id: "1",
     type: "return",
     itemName: "Kids Party Setup for Birthday",
+    description: "Full party setup including tables, chairs, and decorations",
     dueDate: "2023-11-15",
     daysLeft: 5,
     ownerName: "Priya Sharma",
     image: "https://images.pexels.com/photos/796605/pexels-photo-796605.jpeg",
+    status: "upcoming",
   },
   {
     id: "2",
     type: "receive",
     itemName: "Professional DSLR Camera Kit",
+    description: "Canon EOS R5 with 24-70mm lens and accessories",
     dueDate: "2023-11-20",
     daysLeft: 10,
     renterName: "Arjun Mehta",
     image: "https://images.pexels.com/photos/243757/pexels-photo-243757.jpeg",
+    status: "pending",
+  },
+  {
+    id: "3",
+    type: "return",
+    itemName: "Vintage Party Dress",
+    description: "Elegant red dress, size M with matching accessories",
+    dueDate: "2023-11-25",
+    daysLeft: 2,
+    ownerName: "Neha Kapoor",
+    image: "https://images.pexels.com/photos/985635/pexels-photo-985635.jpeg",
+    status: "urgent",
+  },
+  {
+    id: "4",
+    type: "return",
+    itemName: "Camping Equipment Bundle",
+    description: "4-person tent, sleeping bags, and portable stove",
+    dueDate: "2023-11-30",
+    daysLeft: 15,
+    ownerName: "Raj Malhotra",
+    image: "https://images.pexels.com/photos/6271625/pexels-photo-6271625.jpeg",
+    status: "upcoming",
   },
 ];
 
-// Generate calendar days
+// Generate calendar days with improved implementation
 const generateCalendarDays = (year, month) => {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-
+  const today = new Date();
   const days = [];
 
-  // Add empty cells for days before the 1st of the month
+  // Previous month days to fill the first row
+  const prevMonthDays = new Date(year, month, 0).getDate();
   for (let i = 0; i < firstDay; i++) {
-    days.push({ day: 0, isCurrentMonth: false });
+    const day = prevMonthDays - firstDay + i + 1;
+    days.push({ 
+      day, 
+      isCurrentMonth: false,
+      isPrevMonth: true,
+      date: new Date(year, month - 1, day).toISOString().split("T")[0]
+    });
   }
 
-  // Add days of the current month
+  // Current month days
   for (let i = 1; i <= daysInMonth; i++) {
     const date = new Date(year, month, i);
     const dateStr = date.toISOString().split("T")[0];
+    const isToday = 
+      today.getDate() === i && 
+      today.getMonth() === month && 
+      today.getFullYear() === year;
 
-    const hasReminders = reminders.some(
+    const remindersForDay = reminders.filter(
       (reminder) => reminder.dueDate === dateStr
     );
 
@@ -54,36 +97,65 @@ const generateCalendarDays = (year, month) => {
       day: i,
       isCurrentMonth: true,
       date: dateStr,
-      hasReminders,
+      isToday,
+      reminders: remindersForDay,
+      hasUrgent: remindersForDay.some((r) => r.status === "urgent"),
+      hasUpcoming: remindersForDay.some((r) => r.status === "upcoming"),
+      hasPending: remindersForDay.some((r) => r.status === "pending"),
+    });
+  }
+
+  // Next month days to complete the grid
+  const totalDaysNeeded = 42; // 6 rows of 7 days
+  const remainingDays = totalDaysNeeded - days.length;
+  for (let i = 1; i <= remainingDays; i++) {
+    days.push({ 
+      day: i, 
+      isCurrentMonth: false,
+      isNextMonth: true,
+      date: new Date(year, month + 1, i).toISOString().split("T")[0]
     });
   }
 
   return days;
 };
 
-const Calendar = () => {
+const RentalRemindersPage = () => {
   const today = new Date();
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
+  const [selectedDate, setSelectedDate] = useState(today.toISOString().split("T")[0]);
+  const [selectedReminders, setSelectedReminders] = useState([]);
+  const [filterStatus, setFilterStatus] = useState(null);
 
   const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
+  
   const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  // Generate calendar days
   const calendarDays = generateCalendarDays(currentYear, currentMonth);
 
+  // Filter reminders based on selected date and filter status
+  useEffect(() => {
+    if (selectedDate) {
+      let filtered = reminders.filter(
+        (reminder) => reminder.dueDate === selectedDate
+      );
+      
+      if (filterStatus) {
+        filtered = filtered.filter(r => r.status === filterStatus);
+      }
+      
+      setSelectedReminders(filtered);
+    } else {
+      setSelectedReminders([]);
+    }
+  }, [selectedDate, filterStatus]);
+
+  // Navigation functions
   const goToPreviousMonth = () => {
     if (currentMonth === 0) {
       setCurrentMonth(11);
@@ -102,150 +174,446 @@ const Calendar = () => {
     }
   };
 
+  const goToToday = () => {
+    setCurrentMonth(today.getMonth());
+    setCurrentYear(today.getFullYear());
+    setSelectedDate(today.toISOString().split("T")[0]);
+  };
+
+  // Helper function to get status styling
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "urgent":
+        return "bg-red-100 text-red-800 border-red-200";
+      case "upcoming":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "pending":
+        return "bg-purple-100 text-purple-800 border-purple-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "urgent":
+        return <AlertCircle className="w-4 h-4 text-red-500" />;
+      case "upcoming":
+        return <Clock className="w-4 h-4 text-yellow-500" />;
+      case "pending":
+        return <CalendarIcon className="w-4 h-4 text-purple-500" />;
+      default:
+        return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+    }
+  };
+
   return (
     <Layout showSidebar={false}>
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <motion.h1
-          className="text-2xl font-bold mb-6 flex items-center"
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        {/* Header Section */}
+        <motion.div
+          className="bg-gradient-to-r from-purple-100 via-purple-50 to-indigo-50 rounded-xl p-6 mb-8 shadow-sm"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
-          <CalendarIcon size={24} className="mr-2" />
-          Calendar & Reminders
-        </motion.h1>
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="bg-white p-3 rounded-lg shadow-md">
+                <Bell className="w-6 h-6 text-purple-600" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-800">Rental Reminders</h1>
+                <p className="text-gray-600 mt-1">Stay on top of your rental schedule</p>
+              </div>
+            </div>
+            <div className="hidden md:flex items-center space-x-3">
+              <div className="flex items-center px-4 py-2 bg-white rounded-full shadow-sm">
+                <Clock className="w-4 h-4 text-purple-600 mr-2" />
+                <span className="text-sm font-medium">{reminders.length} Active Reminders</span>
+              </div>
+              <button onClick={goToToday} className="px-4 py-2 bg-purple-600 text-white rounded-full shadow-sm hover:bg-purple-700 transition-colors">
+                Today
+              </button>
+            </div>
+          </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Reminders Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Calendar Section - Larger on desktop */}
           <motion.div
-            className="lg:col-span-1 space-y-4"
+            className="lg:col-span-8 order-2 lg:order-1"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}>
-            <h2 className="font-bold text-lg mb-4">Upcoming Reminders</h2>
-
-            {reminders.length === 0 ? (
-              <p className="text-gray-500">No upcoming reminders</p>
-            ) : (
-              reminders.map((reminder) => (
-                <motion.div
-                  key={reminder.id}
-                  className="bg-white rounded-lg shadow-sm overflow-hidden"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  whileHover={{ y: -3 }}>
-                  <div className="flex">
-                    <img
-                      src={reminder.image}
-                      alt={reminder.itemName}
-                      className="w-20 h-20 object-cover"
-                    />
-
-                    <div className="p-3 flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{reminder.itemName}</h3>
-                          <p className="text-sm text-gray-500">
-                            {reminder.type === "return"
-                              ? "Return to:"
-                              : "Receive from:"}{" "}
-                            {reminder.type === "return"
-                              ? reminder.ownerName
-                              : reminder.renterName}
-                          </p>
-                        </div>
-
-                        <div
-                          className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            reminder.daysLeft <= 3
-                              ? "bg-red-100 text-red-800"
-                              : "bg-yellow-100 text-yellow-800"
-                          }`}>
-                          {reminder.daysLeft} days left
-                        </div>
-                      </div>
-
-                      <p className="text-xs text-gray-500 mt-2">
-                        Due date:{" "}
-                        {new Date(reminder.dueDate).toLocaleDateString(
-                          "en-US",
-                          { month: "short", day: "numeric", year: "numeric" }
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              ))
-            )}
-          </motion.div>
-
-          {/* Calendar Section */}
-          <motion.div
-            className="lg:col-span-2"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}>
-            <div className="bg-white rounded-lg shadow-sm overflow-hidden">
-              <div className="p-4 border-b border-gray-200 flex justify-between items-center">
-                <h2 className="font-bold text-lg">
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+              <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h2 className="font-bold text-xl text-gray-800 flex items-center">
+                  <CalendarIcon className="w-5 h-5 mr-2 text-purple-600" />
                   {monthNames[currentMonth]} {currentYear}
                 </h2>
 
                 <div className="flex space-x-2">
                   <button
                     onClick={goToPreviousMonth}
-                    className="p-1 rounded-full hover:bg-gray-100">
-                    <ChevronLeft size={20} />
+                    className="p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-gray-600" />
                   </button>
                   <button
                     onClick={goToNextMonth}
-                    className="p-1 rounded-full hover:bg-gray-100">
-                    <ChevronRight size={20} />
+                    className="p-2 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5 text-gray-600" />
                   </button>
                 </div>
               </div>
 
               <div className="p-4">
+                {/* Weekday headers */}
                 <div className="grid grid-cols-7 gap-2 mb-2">
                   {weekdays.map((day) => (
                     <div
                       key={day}
-                      className="text-center text-sm font-medium text-gray-500">
+                      className="text-center text-sm font-medium text-gray-500 py-2"
+                    >
                       {day}
                     </div>
                   ))}
                 </div>
 
+                {/* Calendar grid */}
                 <div className="grid grid-cols-7 gap-2">
-                  {calendarDays.map((day, index) => (
-                    <div
-                      key={index}
-                      className={`h-14 p-1 border rounded-md ${
-                        !day.isCurrentMonth
-                          ? "bg-gray-50 text-gray-300"
-                          : day.hasReminders
-                          ? "bg-pink-50 border-pink-200"
-                          : "hover:bg-gray-50"
-                      }`}>
-                      <div className="flex justify-between items-start h-full">
-                        <span
-                          className={`text-sm ${
-                            day.date === today.toISOString().split("T")[0]
-                              ? "bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center"
-                              : ""
-                          }`}>
-                          {day.day || ""}
-                        </span>
+                  {calendarDays.map((day, index) => {
+                    // Determine the background styling
+                    let bgClass = "bg-white hover:bg-gray-50";
+                    let indicatorClass = "";
+                    
+                    if (!day.isCurrentMonth) {
+                      bgClass = "bg-gray-50 text-gray-300";
+                    } else if (day.hasUrgent) {
+                      bgClass = "bg-red-50 hover:bg-red-100";
+                      indicatorClass = "bg-red-400";
+                    } else if (day.hasUpcoming) {
+                      bgClass = "bg-yellow-50 hover:bg-yellow-100";
+                      indicatorClass = "bg-yellow-400";
+                    } else if (day.hasPending) {
+                      bgClass = "bg-purple-50 hover:bg-purple-100";
+                      indicatorClass = "bg-purple-400";
+                    }
+                    
+                    // Selected date styling
+                    const isSelected = selectedDate === day.date;
+                    
+                    return (
+                      <motion.div
+                        key={index}
+                        className={`
+                          min-h-[5rem] p-2 rounded-lg border border-gray-100 transition-colors cursor-pointer
+                          ${bgClass}
+                          ${isSelected ? "ring-2 ring-purple-500" : ""}
+                        `}
+                        onClick={() => setSelectedDate(day.date)}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <div className="flex flex-col h-full">
+                          <div className="flex justify-between items-center mb-2">
+                            <span
+                              className={`
+                                text-sm font-medium w-7 h-7 flex items-center justify-center
+                                ${day.isToday ? "bg-purple-600 text-white rounded-full" : ""}
+                              `}
+                            >
+                              {day.day}
+                            </span>
+                            
+                            {day.reminders && day.reminders.length > 0 && (
+                              <span className="text-xs bg-purple-600 text-white rounded-full w-5 h-5 flex items-center justify-center">
+                                {day.reminders.length}
+                              </span>
+                            )}
+                          </div>
 
-                        {day.hasReminders && (
-                          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                          {/* Indicator dots for reminders */}
+                          {day.reminders && day.reminders.length > 0 && (
+                            <div className="flex space-x-1 mt-auto">
+                              {day.reminders.slice(0, 3).map((reminder, i) => (
+                                <div
+                                  key={i}
+                                  className={`
+                                    w-2 h-2 rounded-full
+                                    ${reminder.status === "urgent" ? "bg-red-400" : 
+                                      reminder.status === "upcoming" ? "bg-yellow-400" : "bg-purple-400"}
+                                  `}
+                                />
+                              ))}
+                              {day.reminders.length > 3 && (
+                                <div className="w-2 h-2 rounded-full bg-gray-400" />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+              
+              {/* Status legend */}
+              <div className="p-4 border-t border-gray-100">
+                <div className="flex items-center justify-center space-x-6">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-red-400 mr-2"></div>
+                    <span className="text-xs text-gray-600">Urgent</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-yellow-400 mr-2"></div>
+                    <span className="text-xs text-gray-600">Upcoming</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 rounded-full bg-purple-400 mr-2"></div>
+                    <span className="text-xs text-gray-600">Pending</span>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Selected date reminders */}
+            {selectedDate && (
+              <motion.div 
+                className="mt-6 bg-white rounded-xl shadow-sm p-4 border border-gray-100"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="font-bold text-lg text-gray-800">
+                    {new Date(selectedDate).toLocaleDateString("en-US", {
+                      weekday: "long",
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric"
+                    })}
+                  </h3>
+                  
+                  <div className="flex space-x-2">
+                    <button 
+                      onClick={() => setFilterStatus(null)}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${!filterStatus ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600'}`}
+                    >
+                      All
+                    </button>
+                    <button 
+                      onClick={() => setFilterStatus('urgent')}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${filterStatus === 'urgent' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-600'}`}
+                    >
+                      Urgent
+                    </button>
+                    <button 
+                      onClick={() => setFilterStatus('upcoming')}
+                      className={`px-3 py-1 text-xs rounded-full transition-colors ${filterStatus === 'upcoming' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-600'}`}
+                    >
+                      Upcoming
+                    </button>
+                  </div>
+                </div>
+
+                <AnimatePresence>
+                  {selectedReminders.length > 0 ? (
+                    <div className="space-y-3">
+                      {selectedReminders.map((reminder) => (
+                        <motion.div
+                          key={reminder.id}
+                          className="flex items-center bg-gray-50 rounded-lg p-3 border border-gray-100"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.2 }}
+                        >
+                          <div className="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden mr-3">
+                            <img
+                              src={reminder.image}
+                              alt=""
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-gray-800">{reminder.itemName}</h4>
+                            <p className="text-xs text-gray-500">
+                              {reminder.type === "return"
+                                ? `Return to ${reminder.ownerName}`
+                                : `Receive from ${reminder.renterName}`}
+                            </p>
+                          </div>
+                          <div className="flex items-center">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(reminder.status)}`}>
+                              {reminder.daysLeft} {reminder.daysLeft === 1 ? 'day' : 'days'} left
+                            </span>
+                            <button className="ml-3 p-2 rounded-full hover:bg-gray-200 transition-colors">
+                              <ArrowRight className="w-4 h-4 text-gray-500" />
+                            </button>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <motion.div 
+                      className="text-center py-12"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                        <Calendar className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h3 className="text-lg font-medium text-gray-700">No reminders for this date</h3>
+                      <p className="text-gray-500 mt-1">Select a different date or add a new reminder</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Reminders Section - Smaller on desktop */}
+          <motion.div
+            className="lg:col-span-4 order-1 lg:order-2"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+              <div className="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h2 className="font-bold text-lg text-gray-800">Upcoming Reminders</h2>
+                <div className="flex items-center">
+                  <span className="text-xs font-medium text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
+                    {reminders.length} items
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-4">
+                <div className="space-y-4">
+                  {reminders.slice(0, 3).map((reminder) => (
+                    <motion.div
+                      key={reminder.id}
+                      className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      whileHover={{ y: -2, transition: { duration: 0.2 } }}
+                    >
+                      <div className="flex">
+                        <div className="relative w-24 h-24">
+                          <img
+                            src={reminder.image}
+                            alt={reminder.itemName}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                          <div className="absolute bottom-2 left-2">
+                            {getStatusIcon(reminder.status)}
+                          </div>
+                        </div>
+
+                        <div className="p-4 flex-1">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-medium text-gray-800 mb-1">
+                                {reminder.itemName}
+                              </h3>
+                              <p className="text-xs text-gray-500">
+                                {reminder.description.length > 40
+                                  ? `${reminder.description.substring(0, 40)}...`
+                                  : reminder.description}
+                              </p>
+                              <p className="text-xs text-gray-500 mt-2 flex items-center">
+                                {reminder.type === "return" ? (
+                                  <CheckCircle2 className="w-3 h-3 mr-1 text-green-500" />
+                                ) : (
+                                  <AlertCircle className="w-3 h-3 mr-1 text-purple-500" />
+                                )}
+                                {reminder.type === "return"
+                                  ? `Return to ${reminder.ownerName}`
+                                  : `Receive from ${reminder.renterName}`}
+                              </p>
+                            </div>
+
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                                reminder.status
+                              )}`}
+                            >
+                              {reminder.daysLeft} {reminder.daysLeft === 1 ? 'day' : 'days'} left
+                            </span>
+                          </div>
+
+                          <div className="mt-3 text-xs text-gray-500">
+                            Due: {new Date(reminder.dueDate).toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+
+                  {reminders.length > 3 && (
+                    <motion.button
+                      className="w-full py-3 text-center text-sm font-medium text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      View All {reminders.length} Reminders
+                    </motion.button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions Card */}
+            <motion.div
+              className="mt-6 bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <div className="p-5 border-b border-gray-100">
+                <h2 className="font-bold text-lg text-gray-800">Quick Actions</h2>
+              </div>
+              <div className="p-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <button className="bg-purple-50 hover:bg-purple-100 transition-colors p-4 rounded-lg flex flex-col items-center justify-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                      <Clock className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-800">Add Reminder</span>
+                  </button>
+                  <button className="bg-purple-50 hover:bg-purple-100 transition-colors p-4 rounded-lg flex flex-col items-center justify-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                      <Bell className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-800">Notifications</span>
+                  </button>
+                  <button className="bg-purple-50 hover:bg-purple-100 transition-colors p-4 rounded-lg flex flex-col items-center justify-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                      <CalendarIcon className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-800">Sync Calendar</span>
+                  </button>
+                  <button className="bg-purple-50 hover:bg-purple-100 transition-colors p-4 rounded-lg flex flex-col items-center justify-center">
+                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+                      <AlertCircle className="w-5 h-5 text-purple-600" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-800">Manage Alerts</span>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
@@ -253,4 +621,4 @@ const Calendar = () => {
   );
 };
 
-export default Calendar;
+export default RentalRemindersPage;
