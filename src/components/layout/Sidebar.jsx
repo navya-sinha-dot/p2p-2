@@ -31,8 +31,8 @@ const Sidebar = ({ selectedCategory, onSelectCategory }) => {
               onClick={() => onSelectCategory(category.id)}
               className={`w-full text-left py-2 px-4 rounded-md transition-colors ${
                 selectedCategory === category.id
-                  ? "bg-pink-300 font-medium"
-                  : "hover:bg-pink-100"
+                  ? "bg-purple-300 font-medium"
+                  : "hover:bg-purple-100"
               }`}>
               {category.name}
             </button>
