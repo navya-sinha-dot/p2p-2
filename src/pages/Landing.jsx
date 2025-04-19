@@ -17,7 +17,7 @@ const Landing = () => {
 
   return (
     <motion.div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-100 to-purple-200 py-3 px-6 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90"
+      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-r from-purple-200 to-purple-300 py-3 px-6 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}>
