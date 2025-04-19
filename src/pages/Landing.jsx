@@ -10,7 +10,7 @@ const Loader = () => {
   return (
     <div className="flex justify-center items-center">
       <img
-        src="logo.jpg"
+        src="image-removebg-preview.png"
         alt="TradyR Logo"
         className="w-24 h-24 animate-pulse"
         style={{
