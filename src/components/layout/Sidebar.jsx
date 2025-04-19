@@ -2,8 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const categories = [
-  { id: "books", name: "Books"},
-  { id: "tools", name: "Tools & Equipment" },
+  { id: "books", name: "Books", path: "/books" },
+  { id: "tools", name: "Tools & Equipment", path: "/tools" },
   { id: "electronics", name: "Electronics & Gadgets" },
   { id: "tech-accessories", name: "Tech Accessories" },
   { id: "apparel", name: "Apparel & Fashion" },

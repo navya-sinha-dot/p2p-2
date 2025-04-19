@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import Sidebar from "./components/Sidebar"; 
+import Sidebar from "./components/layout/Sidebar";
 // Pages
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
@@ -26,7 +26,6 @@ function App() {
         <CartProvider>
           <UIProvider>
             <AnimatePresence mode="wait">
-            
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/home" element={<Home />} />
