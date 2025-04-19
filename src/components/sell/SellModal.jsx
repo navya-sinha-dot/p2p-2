@@ -60,18 +60,18 @@ const SellModal = () => {
         <div className="px-6 pt-4">
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-pink-600 h-2 rounded-full"
+              className="bg-purple-600 h-2 rounded-full"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span className={step >= 1 ? "text-pink-600 font-medium" : ""}>
+            <span className={step >= 1 ? "text-purple-600 font-medium" : ""}>
               Category
             </span>
-            <span className={step >= 2 ? "text-pink-600 font-medium" : ""}>
+            <span className={step >= 2 ? "text-purple-600 font-medium" : ""}>
               Details
             </span>
-            <span className={step >= 3 ? "text-pink-600 font-medium" : ""}>
+            <span className={step >= 3 ? "text-purple-600 font-medium" : ""}>
               Pricing & Images
             </span>
           </div>
@@ -91,7 +91,7 @@ const SellModal = () => {
                       type="button"
                       className={`py-2 px-3 rounded-md border text-left transition-colors ${
                         sellFormData.category === category.id
-                          ? "border-pink-500 bg-pink-50 text-pink-700"
+                          ? "border-purple-500 bg-pink-50 text-purple-700"
                           : "border-gray-300 hover:bg-gray-50"
                       }`}
                       onClick={() =>
@@ -105,7 +105,7 @@ const SellModal = () => {
                 <div className="mt-3">
                   <button
                     type="button"
-                    className="text-sm text-pink-600 hover:text-pink-800 flex items-center">
+                    className="text-sm text-purple-600 hover:text-purple-800 flex items-center">
                     <Plus size={16} className="mr-1" />
                     Request to add a new category
                   </button>
@@ -123,7 +123,7 @@ const SellModal = () => {
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                     value={sellFormData.itemName || ""}
                     onChange={(e) =>
                       updateSellFormData({ itemName: e.target.value })
@@ -137,7 +137,7 @@ const SellModal = () => {
                     Description
                   </label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                     rows={3}
                     value={sellFormData.description || ""}
                     onChange={(e) =>
@@ -151,7 +151,7 @@ const SellModal = () => {
                     How old is this item?
                   </label>
                   <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-pink-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
                     value={sellFormData.age || ""}
                     onChange={(e) =>
                       updateSellFormData({ age: e.target.value })
@@ -183,7 +183,7 @@ const SellModal = () => {
                       </span>
                       <input
                         type="number"
-                        className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                        className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                         value={sellFormData.price || ""}
                         onChange={(e) =>
                           updateSellFormData({
@@ -207,7 +207,7 @@ const SellModal = () => {
                       </span>
                       <input
                         type="number"
-                        className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                        className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                         value={sellFormData.deposit || ""}
                         onChange={(e) =>
                           updateSellFormData({
@@ -233,7 +233,7 @@ const SellModal = () => {
                         <button
                           type="button"
                           onClick={addImage}
-                          className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-md text-sm">
+                          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
                           <Camera size={16} className="mr-2" />
                           Take photos
                         </button>
@@ -267,7 +267,7 @@ const SellModal = () => {
                         </p>
                         <button
                           onClick={addImage}
-                          className="mt-2 text-sm flex items-center text-pink-600 hover:text-pink-800">
+                          className="mt-2 text-sm flex items-center text-purple-600 hover:text-purple-800">
                           <Plus size={14} className="mr-1" />
                           Add more images
                         </button>
@@ -281,7 +281,7 @@ const SellModal = () => {
                     Return policy
                   </label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
                     rows={2}
                     value={sellFormData.returnPolicy || ""}
                     onChange={(e) =>
@@ -314,13 +314,13 @@ const SellModal = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700">
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
                 Next
               </button>
             ) : (
               <button
                 type="submit"
-                className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700">
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
                 List item
               </button>
             )}

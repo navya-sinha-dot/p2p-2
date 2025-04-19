@@ -50,7 +50,7 @@ const Wishlist = () => {
             <p className="text-gray-500 mb-6">Your wishlist is empty</p>
             <button
               onClick={() => navigate("/home")}
-              className="px-6 py-2 bg-pink-600 text-white rounded-md font-medium">
+              className="px-6 py-2 bg-purple-600 text-white rounded-md font-medium">
               Browse Items
             </button>
           </motion.div>
@@ -76,7 +76,7 @@ const Wishlist = () => {
                 <div className="p-4 flex-1 flex flex-col">
                   <div className="flex justify-between mb-2">
                     <h3
-                      className="font-medium text-lg cursor-pointer hover:text-pink-600"
+                      className="font-medium text-lg cursor-pointer hover:text-purple-600"
                       onClick={() => navigate(`/product/${item.id}`)}>
                       {item.name}
                     </h3>
@@ -95,7 +95,7 @@ const Wishlist = () => {
                   <div className="mt-auto pt-2">
                     <motion.button
                       onClick={() => navigate(`/product/${item.id}`)}
-                      className="w-full py-2 bg-pink-600 text-white rounded-md text-sm font-medium"
+                      className="w-full py-2 bg-purple-600 text-white rounded-md text-sm font-medium"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}>
                       View Details

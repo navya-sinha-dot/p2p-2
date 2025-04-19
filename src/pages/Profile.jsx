@@ -114,7 +114,7 @@ const Profile = () => {
               onClick={() => setActiveTab("rentals")}
               className={`w-full flex items-center p-3 rounded-md text-left ${
                 activeTab === "rentals"
-                  ? "bg-pink-50 text-pink-600"
+                  ? "bg-pink-50 text-purple-600"
                   : "hover:bg-gray-50"
               }`}>
               <Package size={20} className="mr-3" />
@@ -125,7 +125,7 @@ const Profile = () => {
               onClick={() => setActiveTab("history")}
               className={`w-full flex items-center p-3 rounded-md text-left ${
                 activeTab === "history"
-                  ? "bg-pink-50 text-pink-600"
+                  ? "bg-pink-50 text-purple-600"
                   : "hover:bg-gray-50"
               }`}>
               <History size={20} className="mr-3" />
@@ -136,7 +136,7 @@ const Profile = () => {
               onClick={() => setActiveTab("payments")}
               className={`w-full flex items-center p-3 rounded-md text-left ${
                 activeTab === "payments"
-                  ? "bg-pink-50 text-pink-600"
+                  ? "bg-pink-50 text-purple-600"
                   : "hover:bg-gray-50"
               }`}>
               <CreditCard size={20} className="mr-3" />
@@ -147,7 +147,7 @@ const Profile = () => {
               onClick={() => setActiveTab("notifications")}
               className={`w-full flex items-center p-3 rounded-md text-left ${
                 activeTab === "notifications"
-                  ? "bg-pink-50 text-pink-600"
+                  ? "bg-pink-50 text-purple-600"
                   : "hover:bg-gray-50"
               }`}>
               <Bell size={20} className="mr-3" />
@@ -158,7 +158,7 @@ const Profile = () => {
               onClick={() => setActiveTab("security")}
               className={`w-full flex items-center p-3 rounded-md text-left ${
                 activeTab === "security"
-                  ? "bg-pink-50 text-pink-600"
+                  ? "bg-pink-50 text-purple-600"
                   : "hover:bg-gray-50"
               }`}>
               <Shield size={20} className="mr-3" />
@@ -226,7 +226,7 @@ const Profile = () => {
                             ₹ {rental.price} per week
                           </p>
                           <motion.button
-                            className="px-4 py-2 bg-pink-600 text-white rounded-md text-sm font-medium"
+                            className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}>
                             View Details

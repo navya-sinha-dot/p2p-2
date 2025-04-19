@@ -39,7 +39,7 @@ const Cart = () => {
             <p className="text-gray-500 mb-6">Your cart is empty</p>
             <button
               onClick={() => navigate("/home")}
-              className="px-6 py-2 bg-pink-600 text-white rounded-md font-medium">
+              className="px-6 py-2 bg-purple-600 text-white rounded-md font-medium">
               Browse Items
             </button>
           </motion.div>
@@ -139,7 +139,7 @@ const Cart = () => {
 
               <motion.button
                 onClick={handleCheckout}
-                className="w-full py-3 bg-pink-600 text-white rounded-md font-medium"
+                className="w-full py-3 bg-purple-600 text-white rounded-md font-medium"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}>
                 Proceed to Payment
@@ -147,7 +147,7 @@ const Cart = () => {
 
               <button
                 onClick={() => navigate("/home")}
-                className="w-full text-center mt-4 text-sm text-gray-600 hover:text-pink-600">
+                className="w-full text-center mt-4 text-sm text-gray-600 hover:text-purple-600">
                 Continue Shopping
               </button>
             </motion.div>

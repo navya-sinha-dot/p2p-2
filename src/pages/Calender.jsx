@@ -231,14 +231,14 @@ const Calendar = () => {
                         <span
                           className={`text-sm ${
                             day.date === today.toISOString().split("T")[0]
-                              ? "bg-pink-600 text-white w-6 h-6 rounded-full flex items-center justify-center"
+                              ? "bg-purple-600 text-white w-6 h-6 rounded-full flex items-center justify-center"
                               : ""
                           }`}>
                           {day.day || ""}
                         </span>
 
                         {day.hasReminders && (
-                          <span className="w-2 h-2 rounded-full bg-pink-500"></span>
+                          <span className="w-2 h-2 rounded-full bg-purple-500"></span>
                         )}
                       </div>
                     </div>

@@ -87,7 +87,7 @@ const SellModal = () => {
                         type="button"
                         className={`py-2 px-3 rounded-md border text-left transition-colors ${
                           sellFormData.category === category.id
-                            ? "border-pink-500 bg-pink-50 text-pink-700"
+                            ? "border-purple-500 bg-purple-50 text-purple-700"
                             : "border-gray-300 hover:bg-gray-50"
                         }`}
                         whileHover={{ scale: 1.02 }}
@@ -103,7 +103,7 @@ const SellModal = () => {
                   <div className="mt-3">
                     <button
                       type="button"
-                      className="text-sm text-pink-600 hover:text-pink-800">
+                      className="text-sm text-purple-600 hover:text-purple-800">
                       Request to add a new category
                     </button>
                   </div>
@@ -217,7 +217,7 @@ const SellModal = () => {
                         <div className="mb-3 flex space-x-3">
                           <button
                             type="button"
-                            className="flex items-center px-4 py-2 bg-pink-600 text-white rounded-md text-sm">
+                            className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
                             <Camera size={16} className="mr-2" />
                             Take photos
                           </button>
@@ -274,13 +274,13 @@ const SellModal = () => {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700">
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
                   Next
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700">
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
                   List item
                 </button>
               )}
