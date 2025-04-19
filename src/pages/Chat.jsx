@@ -35,7 +35,7 @@ const Avatar = ({ name, src, size = "md" }) => {
 
   return src ? (
     <div
-      className={`${sizes[size]} rounded-full overflow-hidden flex-shrink-0 border-2 border-pink-100`}>
+      className={`${sizes[size]} rounded-full overflow-hidden flex-shrink-0 border-2 border-purple-100`}>
       <img src={src} alt={name} className="h-full w-full object-cover" />
     </div>
   ) : (
@@ -414,7 +414,7 @@ const Chat = () => {
                 {/* Chat Messages */}
                 <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 bg-opacity-60 backdrop-blur-sm">
                   <div className="text-center mb-4">
-                    <span className="inline-block px-3 py-1 bg-pink-100 text-purple-800 text-xs rounded-full">
+                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
                       {formatTime(selectedChat.messages[0]?.time || "Today")}
                     </span>
                   </div>

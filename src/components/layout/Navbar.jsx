@@ -3,13 +3,11 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Search,
-  ShoppingCart,
   Heart,
   Calendar,
   MessageCircle,
   User,
   Plus,
-  Bell
 } from "lucide-react";
 import { useUI } from "../../context/UIContext";
 import Logo from "../common/Logo";
@@ -75,10 +73,7 @@ const Navbar = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link to="/notifications" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
-              <Bell size={22} />
-              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">3</span>
-            </Link>
+    
           </motion.div>
           
           <motion.div
@@ -98,6 +93,7 @@ const Navbar = () => {
           >
             <Link to="/wishlist" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
               <Heart size={22} />
+              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">2</span>
             </Link>
           </motion.div>
           
@@ -107,10 +103,7 @@ const Navbar = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link to="/cart" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
-              <ShoppingCart size={22} />
-              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">2</span>
-            </Link>
+            
           </motion.div>
           
           <motion.div

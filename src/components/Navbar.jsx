@@ -4,7 +4,6 @@ import {
   MessageSquare,
   Bell,
   Heart,
-  ShoppingCart,
   User,
   Plus,
 } from "lucide-react";
@@ -43,9 +42,7 @@ function Navbar() {
         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
           <Heart size={20} />
         </div>
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-          <ShoppingCart size={20} />
-        </div>
+  
         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
           <User size={20} />
         </div>
