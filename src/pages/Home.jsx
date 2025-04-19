@@ -11,9 +11,9 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
+    // if (!loading && !user) {
+    //   navigate("/login");
+    // }
   }, [user, loading, navigate]);
 
   if (loading) return <p>Loading...</p>;
