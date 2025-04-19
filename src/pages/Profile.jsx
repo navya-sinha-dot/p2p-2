@@ -90,7 +90,7 @@ const ProfilePage = () => {
               <div className="flex flex-col md:flex-row items-start gap-6">
                 <div className="w-32 h-32 border-2 border-purple-300 rounded-lg overflow-hidden">
                   <img
-                    src="/profile-placeholder.svg"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGhZ-SF89fyG_BeqA-qcKukcn6yZiBF6MZVw&s"
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
@@ -137,7 +137,7 @@ const ProfilePage = () => {
                   <div className="flex items-center gap-2 text-sm text-gray-600">
                     <span>USER VERIFIED WITH</span>
                     <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-full overflow-hidden">
+                      <div className="w-11 h-11 rounded-full overflow-hidden">
                         <img
                           src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
                           alt="Google"
@@ -220,9 +220,9 @@ const ProfilePage = () => {
           <div className="flex flex-col items-center justify-center py-12">
             <div className="w-20 h-20 mb-4">
               <img
-                src="/empty-state.svg"
+                src="https://thumbs.dreamstime.com/b/confused-man-sitting-desk-computer-shopping-cart-flat-vector-illustration-beard-looks-puzzled-typing-his-365405750.jpg"
                 alt="No listings"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain rounded-3xl"
               />
             </div>
             <p className="text-gray-600 mb-6">
