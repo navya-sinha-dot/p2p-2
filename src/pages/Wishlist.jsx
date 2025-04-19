@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Layout from "../components/layout/Layout";
 import { useWishlist } from "../hooks/useWishlist";
+import ProductCard from "../components/common/ProductCard";
 
 // Recommended products based on wishlist categories
 const recommendedProducts = [
@@ -281,7 +282,7 @@ const Wishlist = () => {
               transition={{ duration: 0.5 }}
             >
               {wishlist.map((item) => (
-                <ItemCard key={item.id} item={item} isWishlist={true} />
+                <ProductCard key={item.id} item={item} isWishlist={true} />
               ))}
             </motion.div>
 
