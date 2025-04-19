@@ -16,6 +16,7 @@ import ProfilePage from "./pages/Profile";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { UIProvider } from "./context/UIContext";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
                 <Route path="/chat" element={<Chat />} />
                 <Route path="/cart" element={<Cart />} />

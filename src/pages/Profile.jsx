@@ -13,6 +13,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useAuth } from "../hooks/useAuth";
 
 // Register ChartJS components
 ChartJS.register(
@@ -75,13 +76,16 @@ const ProfilePage = () => {
     },
   };
 
+  const { logout } = useAuth();
+
   return (
     <Layout>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="min-h-screen bg-purple-50 pb-10">
+        className="min-h-screen bg-purple-50 pb-10"
+      >
         {/* Profile Header */}
         <div className="bg-white shadow-sm">
           <div className="max-w-6xl mx-auto px-4 py-6">
@@ -106,7 +110,8 @@ const ProfilePage = () => {
                       className="h-4 w-4"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor">
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -123,7 +128,8 @@ const ProfilePage = () => {
                       className="h-4 w-4"
                       fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor">
+                      stroke="currentColor"
+                    >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -150,7 +156,8 @@ const ProfilePage = () => {
                           className="h-4 w-4 text-gray-600"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke="currentColor">
+                          stroke="currentColor"
+                        >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -166,7 +173,10 @@ const ProfilePage = () => {
                     <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors">
                       EDIT PROFILE
                     </button>
-                    <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors">
+                    <button
+                      className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
+                      onClick={() => logout()}
+                    >
                       LOG OUT
                     </button>
                   </div>
