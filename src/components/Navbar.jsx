@@ -1,56 +1,146 @@
 import React from "react";
-import { useNavigate } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   Search,
-  MessageSquare,
-  Bell,
   Heart,
+  Calendar,
+  MessageCircle,
   User,
   Plus,
+  Leaf,
 } from "lucide-react";
+import { useUI } from "../../context/UIContext";
+import Logo from "../common/Logo";
 
-function Navbar() {
+const Navbar = () => {
+  const { openSellModal, openDonateModal } = useUI();
+
+  const iconVariants = {
+    hover: { 
+      scale: 1.1,
+      rotate: 5,
+      transition: { duration: 0.2 }
+    },
+    tap: { 
+      scale: 0.9,
+      transition: { duration: 0.1 }
+    }
+  };
+
   return (
-    <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-amber-50 to-pink-200 shadow-md">
-      <div className="flex items-center">
-        <div className="text-2xl mr-4 "></div>
-        <button className="flex items-center bg-black text-white px-4 py-2 rounded font-bold text-sm gap-1">
-          <Plus size={16} />
-          <span>SELL</span>
-        </button>
-      </div>
+    <motion.nav
+      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50 p-6 shadow-sm"
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}>
+      <div className="max-w-10xl mx-auto flex items-center">
+        <div className="flex items-center space-x-4 mr-20">
+          <Link to="/home" className="flex items-center">
+            <Logo />
+          </Link>
 
-      <div className="flex-1 max-w-lg mx-5">
-        <div className="flex items-center bg-white rounded-full border border-gray-300 overflow-hidden">
-          <input
-            type="text"
-            placeholder="What are you searching for?"
-            className="flex-1 px-4 py-2 outline-none"
-          />
-          <button className="px-4">
-            <Search size={20} />
-          </button>
+          <motion.button
+            onClick={openSellModal}
+            className="bg-purple-700 hover:bg-purple-800 text-white px-5 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
+            whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)" }}
+            whileTap={{ scale: 0.97 }}>
+            <Plus size={18} className="mr-1 mx-auto" />
+            <span>SELL</span>
+          </motion.button>
+          
+          <motion.button
+            onClick={openDonateModal}
+            className="bg-green-500 hover:bg-green-600 text-white px-5 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
+            whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(34, 197, 94, 0.3)" }}
+            whileTap={{ scale: 0.97 }}>
+            <Leaf size={18} className="mr-1 mx-auto" />
+            <span>DONATE</span>
+          </motion.button>
         </div>
-      </div>
 
-      <div className="flex gap-4">
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-          <MessageSquare size={20} />
+        <div className="flex-1 max-w-xl mx-6 mr-30">
+          <div className="relative group">
+            <input
+              type="text"
+              placeholder="What are you searching for?"
+              className="w-full py-2.5 px-5 pr-12 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent shadow-sm transition-all duration-200 bg-white"
+            />
+            <motion.button 
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-purple-100 p-1.5 rounded-full text-purple-700 hover:bg-purple-200 transition-colors duration-200"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Search size={18} />
+            </motion.button>
+          </div>
         </div>
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-          <Bell size={20} />
-        </div>
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-          <Heart size={20} />
-        </div>
-  
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-sm">
-          <User size={20} />
+
+        <div className="flex items-center space-x-1 md:space-x-2">
+          <motion.div 
+            className="relative"
+            variants={iconVariants}
+            whileHover="hover"
+            whileTap="tap"
+          >
+    
+          </motion.div>
+          
+          <motion.div
+            variants={iconVariants}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            <Link to="/chat" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
+              <MessageCircle size={22} />
+            </Link>
+          </motion.div>
+          
+          <motion.div
+            variants={iconVariants}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            <Link to="/wishlist" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
+              <Heart size={22} />
+            </Link>
+          </motion.div>
+          
+          <motion.div 
+            className="relative"
+            variants={iconVariants}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            
+          </motion.div>
+          
+          <motion.div
+            variants={iconVariants}
+            whileHover="hover"
+            whileTap="tap"
+          >
+            <Link to="/calendar" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
+              <Calendar size={22} />
+            </Link>
+          </motion.div>
+          
+          <motion.div 
+            className="ml-1"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Link to="/profile" className="flex items-center bg-purple-200 hover:bg-purple-300 p-1 pr-3 rounded-full transition-colors duration-200">
+              <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center mr-2 border-2 border-white">
+                <User size={16} />
+              </div>
+              <span className="text-sm font-medium text-purple-900 hidden md:block">Profile</span>
+            </Link>
+          </motion.div>
         </div>
       </div>
-    </div>
+    </motion.nav>
   );
-}
+};
 
 export default Navbar;
