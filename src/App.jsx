@@ -5,7 +5,7 @@ import Sidebar from "./components/Sidebar";
 // Pages
 import Landing from "./pages/Landing";
 import Home from "./pages/Home";
-import ProductDetail from "./pages/ProductDetails";
+import ProductDetail from "./pages/ProductDetailPage";
 import Chat from "./pages/Chat";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
