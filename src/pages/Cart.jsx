@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Calendar } from "lucide-react";
+import { Trash2, Calendar, ShoppingBag } from "lucide-react";
 import Layout from "../components/layout/Layout";
 import { useCart } from "../context/CartContext";
 
@@ -9,6 +9,40 @@ const Cart = () => {
   const navigate = useNavigate();
   const { items, removeFromCart, getTotalPrice, getTotalDeposit } = useCart();
   const [rentalDuration, setRentalDuration] = useState({});
+  const [showItems, setShowItems] = useState(false);
+  const itemsRef = useRef(null);
+
+  // Sample items to display when Browse Items is clicked
+  const availableItems = [
+    {
+      id: "item1",
+      name: "DSLR Camera",
+      price: 799,
+      image: "/api/placeholder/100/100",
+      deposit: 2000,
+    },
+    {
+      id: "item2",
+      name: "Camping Tent",
+      price: 350,
+      image: "/api/placeholder/100/100",
+      deposit: 1000,
+    },
+    {
+      id: "item3",
+      name: "Mountain Bike",
+      price: 599,
+      image: "/api/placeholder/100/100",
+      deposit: 1500,
+    },
+    {
+      id: "item4",
+      name: "Drone",
+      price: 899,
+      image: "/api/placeholder/100/100",
+      deposit: 2500,
+    },
+  ];
 
   const updateDuration = (itemId, duration) => {
     setRentalDuration((prev) => ({ ...prev, [itemId]: duration }));
@@ -17,6 +51,24 @@ const Cart = () => {
   const handleCheckout = () => {
     // In a real app, this would initiate the payment process
     alert("Payment gateway would open here!");
+  };
+
+  const handleBrowseItems = () => {
+    setShowItems(true);
+    // Use setTimeout to ensure the state is updated before scrolling
+    setTimeout(() => {
+      if (itemsRef.current) {
+        itemsRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
+  };
+
+  const handleListYourItem = () => {
+    // This would navigate to the sell/list page, similar to what "sell" button does
+    navigate("/sell");
   };
 
   return (
@@ -37,11 +89,20 @@ const Cart = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}>
             <p className="text-gray-500 mb-6">Your cart is empty</p>
-            <button
-              onClick={() => navigate("/home")}
-              className="px-6 py-2 bg-purple-600 text-white rounded-md font-medium">
-              Browse Items
-            </button>
+            <div className="space-y-4">
+              <button
+                onClick={handleBrowseItems}
+                className="px-6 py-2 bg-purple-600 text-white rounded-md font-medium">
+                Browse Items
+              </button>
+              <div className="mt-4">
+                <button
+                  onClick={handleListYourItem}
+                  className="px-6 py-2 border border-purple-600 text-purple-600 rounded-md font-medium">
+                  List Your Item
+                </button>
+              </div>
+            </div>
           </motion.div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -152,6 +213,47 @@ const Cart = () => {
               </button>
             </motion.div>
           </div>
+        )}
+
+        {/* Available Items Section - shown when Browse Items is clicked */}
+        {showItems && (
+          <motion.div
+            ref={itemsRef}
+            className="mt-16 pt-8 border-t border-gray-200"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}>
+            <h2 className="text-xl font-bold mb-6 flex items-center">
+              <ShoppingBag size={20} className="mr-2" />
+              Available Items
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {availableItems.map((item) => (
+                <motion.div
+                  key={item.id}
+                  className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: 0.2 }}>
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-full h-40 object-cover rounded-md mb-3"
+                  />
+                  <h3 className="font-medium text-gray-800">{item.name}</h3>
+                  <p className="text-gray-500 text-sm">
+                    ₹ {item.price} per week
+                  </p>
+                  <p className="text-gray-500 text-xs">
+                    Deposit: ₹ {item.deposit}
+                  </p>
+                  <button className="mt-3 w-full py-2 bg-purple-600 text-white rounded-md text-sm font-medium">
+                    Add to Cart
+                  </button>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
         )}
       </div>
     </Layout>

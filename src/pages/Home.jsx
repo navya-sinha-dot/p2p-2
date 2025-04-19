@@ -5,18 +5,19 @@ import PopularCategories from "../components/home/PopularCategories";
 import FeaturedProducts from "../components/home/FeaturedProducts";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { Loader } from "lucide-react";
 
 const Home = () => {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // if (!loading && !user) {
-    //   navigate("/login");
-    // }
+    //   if (!loading && !user) {
+    //     navigate("/login");
+    //  }
   }, [user, loading, navigate]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loader />;
 
   return (
     <Layout>

@@ -6,7 +6,7 @@ import Logo from "../components/common/Logo";
 import { useAuth } from "../hooks/useAuth";
 
 // Define the Loader component within the same file
-const Loader = () => {
+export const Loader = () => {
   return (
     <div className="flex justify-center items-center">
       <img
