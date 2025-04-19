@@ -39,33 +39,15 @@ const Loader = () => {
 
 const Landing = () => {
   const navigate = useNavigate();
-  const { user, loading } = useAuth();
 
   useEffect(() => {
-    // If the user is logged in, navigate directly to home
-    if (!loading && user) {
-      navigate("/home");
-      return;
-    }
+    // Auto-redirect to home page after 3 seconds
+    const timer = setTimeout(() => {
+      navigate("/login");
+    }, 5000);
 
-    // If user is not logged in, redirect to login page after 5 seconds
-    if (!loading && !user) {
-      const timer = setTimeout(() => {
-        navigate("/login");
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [navigate, user, loading]);
-
-  // Show loading state while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-200 to-purple-300">
-        <Loader />
-      </div>
-    );
-  }
+    return () => clearTimeout(timer);
+  }, [navigate]);
 
   return (
     <motion.div

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { X, Camera, Upload, Plus } from "lucide-react";
 import { useUI } from "../../context/UIContext";
 
@@ -23,10 +23,23 @@ const SellModal = () => {
   } = useUI();
   const [step, setStep] = useState(1);
   const [imageCount, setImageCount] = useState(0);
+  const [images, setImages] = useState([]);
+  const [showCamera, setShowCamera] = useState(false);
+
+  // Create refs for the input elements
+  const cameraInputRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted form data:", sellFormData);
+    // Include the images in the form data
+    const formDataWithImages = {
+      ...sellFormData,
+      images: images,
+    };
+    console.log("Submitted form data:", formDataWithImages);
     resetSellFormData();
     closeSellModal();
   };
@@ -39,9 +52,116 @@ const SellModal = () => {
     setStep(step - 1);
   };
 
+  // Function to start the camera
+  const handleCameraCapture = () => {
+    setShowCamera(true);
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      // Request camera access
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then((stream) => {
+          // Store the stream reference to stop it later if needed
+          streamRef.current = stream;
+
+          // Display camera feed in the video element
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+            videoRef.current.play();
+          }
+        })
+        .catch((error) => {
+          console.error("Camera access error:", error);
+          alert(
+            "Unable to access camera. Please check your device permissions."
+          );
+        });
+    } else {
+      alert("Your browser doesn't support camera access.");
+    }
+  };
+
+  // Function to stop the camera when needed
+  const stopCamera = () => {
+    setShowCamera(false);
+    if (streamRef.current) {
+      const tracks = streamRef.current.getTracks();
+      tracks.forEach((track) => track.stop());
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    }
+  };
+
+  // Function to capture a photo from the video stream
+  const capturePhoto = () => {
+    if (videoRef.current && streamRef.current) {
+      // Create a canvas element to capture the current frame
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+      // Convert the canvas to a Blob
+      canvas.toBlob((blob) => {
+        // Create a File object from the Blob
+        const file = new File([blob], `camera-capture-${Date.now()}.jpg`, {
+          type: "image/jpeg",
+        });
+        processImage(file);
+        stopCamera();
+      }, "image/jpeg");
+    }
+  };
+
+  // Handle file upload
+  const handleFileUpload = () => {
+    // Trigger the hidden file input
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Process the captured image or uploaded file
+  const processImage = (file) => {
+    if (!file) return;
+
+    // Create a URL for the image
+    const imageUrl = URL.createObjectURL(file);
+
+    // Add the new image to the images array
+    setImages((prev) => [...prev, { file, url: imageUrl }]);
+
+    // Increment the image count
+    setImageCount((prevCount) => prevCount + 1);
+
+    // Update the form data with these images
+    updateSellFormData({
+      ...sellFormData,
+      hasImages: true,
+    });
+  };
+
+  // Handle camera input change
+  const handleCameraInputChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      processImage(e.target.files[0]);
+    }
+  };
+
+  // Handle file input change
+  const handleFileInputChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      // Process each file
+      Array.from(e.target.files).forEach((file) => {
+        processImage(file);
+      });
+    }
+  };
+
+  // Add more images function
   const addImage = () => {
-    // Simply increment the counter as a placeholder for real image upload
-    setImageCount(imageCount + 1);
+    handleFileUpload();
   };
 
   return (
@@ -227,30 +347,75 @@ const SellModal = () => {
                     Upload images
                   </label>
 
-                  <div className="border-2 border-dashed border-gray-300 p-6 rounded-md text-center">
-                    <div className="flex flex-col items-center">
-                      <div className="mb-3 flex space-x-3">
-                        <button
-                          type="button"
-                          onClick={addImage}
-                          className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
-                          <Camera size={16} className="mr-2" />
-                          Take photos
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={addImage}
-                          className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-sm">
-                          <Upload size={16} className="mr-2" />
-                          Upload
-                        </button>
+                  {showCamera ? (
+                    <div className="border-2 border-gray-300 p-4 rounded-md">
+                      <div className="relative">
+                        <video
+                          ref={videoRef}
+                          className="w-full h-64 bg-black rounded-md"
+                          autoPlay
+                          playsInline
+                        />
+                        <div className="mt-3 flex justify-center space-x-3">
+                          <button
+                            type="button"
+                            onClick={capturePhoto}
+                            className="px-4 py-2 bg-green-600 text-white rounded-md">
+                            Capture Photo
+                          </button>
+                          <button
+                            type="button"
+                            onClick={stopCamera}
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                            Cancel
+                          </button>
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-500">
-                        Drag and drop images here or use the buttons above
-                      </p>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="border-2 border-dashed border-gray-300 p-6 rounded-md text-center">
+                      <div className="flex flex-col items-center">
+                        <div className="mb-3 flex space-x-3">
+                          <button
+                            type="button"
+                            onClick={handleCameraCapture}
+                            className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
+                            <Camera size={16} className="mr-2" />
+                            Take photos
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={handleFileUpload}
+                            className="flex items-center px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-sm">
+                            <Upload size={16} className="mr-2" />
+                            Upload
+                          </button>
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          Drag and drop images here or use the buttons above
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Hidden inputs for camera and file upload */}
+                  <input
+                    ref={cameraInputRef}
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    onChange={handleCameraInputChange}
+                    className="hidden"
+                  />
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleFileInputChange}
+                    className="hidden"
+                  />
 
                   {/* Simple image counter instead of previews */}
                   {imageCount > 0 && (
@@ -266,6 +431,7 @@ const SellModal = () => {
                           listing
                         </p>
                         <button
+                          type="button"
                           onClick={addImage}
                           className="mt-2 text-sm flex items-center text-purple-600 hover:text-purple-800">
                           <Plus size={14} className="mr-1" />
@@ -310,7 +476,7 @@ const SellModal = () => {
               </button>
             )}
 
-            {step < 3 ? (
+            {step <= 3 ? (
               <button
                 type="button"
                 onClick={handleNext}
@@ -331,9 +497,7 @@ const SellModal = () => {
   );
 };
 
-export default SellModal;
-
-// Don't forget to add this component
+// Check component definition
 function Check(props) {
   return (
     <svg
@@ -351,3 +515,5 @@ function Check(props) {
     </svg>
   );
 }
+
+export default SellModal;

@@ -505,10 +505,10 @@ const Chat = () => {
                 </p>
                 <motion.button
                   onClick={() => setActiveTab("groups")}
-                  className="bg-purple-700 text-white px-6 py-3 rounded-full font-medium shadow-lg flex items-center"
-                  whileHover={{ scale: 1.05, backgroundColor: "#DB2777" }}
+                  className="bg-purple-500 text-white px-6 py-3 rounded-full font-medium shadow-lg flex items-center"
+                  whileHover={{ scale: 1.05, backgroundColor: "purple-700" }}
                   whileTap={{ scale: 0.95 }}>
-                  <MessageCircle size={20} className="mr-2 bg-purple-700" />
+                  <MessageCircle size={20} className="mr-2 bg-purple-500" />
                   Browse groups
                 </motion.button>
               </div>
