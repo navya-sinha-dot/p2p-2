@@ -9,7 +9,9 @@ export function useAuth() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/auth/me", { withCredentials: true })
+      .get("https://p2p-backend-gnjb.onrender.com/auth/me", {
+        withCredentials: true,
+      })
       .then((res) => setUser(res.data.user))
       .catch(() => setUser(null))
       .finally(() => setLoading(false));
@@ -17,7 +19,7 @@ export function useAuth() {
 
   const logout = async () => {
     try {
-      await fetch("http://localhost:3001/auth/logout", {
+      await fetch("https://p2p-backend-gnjb.onrender.com/auth/logout", {
         credentials: "include",
       });
       navigate("/login");

@@ -13,15 +13,14 @@ const GoogleLoginButton = () => {
   }, [user, loading, navigate]);
 
   const loginWithGoogle = () => {
-    window.open("http://localhost:3001/auth/google", "_self");
+    window.open("https://p2p-backend-gnjb.onrender.com/auth/google", "_self");
   };
 
   if (loading) return <p>Loading...</p>;
   return (
     <button
       className="flex items-center justify-center w-full bg-white text-gray-700 font-medium py-3 px-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
-      onClick={() => loginWithGoogle()}
-    >
+      onClick={() => loginWithGoogle()}>
       <img
         src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
         alt="Google"
