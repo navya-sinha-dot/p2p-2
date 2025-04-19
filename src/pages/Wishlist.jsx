@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Trash2, Heart, ChevronRight, ArrowRight, Gift, Clock, Tag } from "lucide-react";
+import { Trash2, Heart, ChevronRight, ArrowRight, Gift, Clock, Tag} from "lucide-react";
 import Layout from "../components/layout/Layout";
 
 // Enhanced wishlist data
@@ -225,7 +225,7 @@ const Wishlist = () => {
         <div className="mt-auto pt-4">
           <motion.button
             onClick={() => navigate(`/product/${item.id}`)}
-            className={`w-full py-2 ${isWishlist ? 'bg-purple-600' : 'bg-gradient-to-r from-purple-600 to-indigo-500'} text-white rounded-md text-sm font-medium flex justify-center items-center`}
+            className={`w-full py-2 ${isWishlist ? 'bg-purple-600' : 'bg-gradient-to-r from-purple-300 to-indigo-300'} text-white rounded-md text-sm font-medium flex justify-center items-center`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}>
             View Details
@@ -256,14 +256,28 @@ const Wishlist = () => {
   return (
     <Layout showSidebar={false}>
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <motion.div
-          className="flex items-center justify-between mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-indigo-300 bg-clip-text text-transparent">Your Wishlist</h1>
-          <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full font-medium">{items.length} items</span>
-        </motion.div>
+         {/* Header Section */}
+                <motion.div
+                  className="bg-gradient-to-r from-purple-100 via-purple-100 to-indigo-50 rounded-xl p-6 mb-8 shadow-sm"
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                    <div className="bg-white p-3 rounded-lg shadow-md">
+                <Heart className="w-6 h-6 text-purple-600" />
+              </div>
+                      <div>
+                        <h1 className="text-2xl font-bold text-gray-800">Your Wishlist</h1>
+                        <p className="text-gray-600 mt-1">Press heart to unlock a world of rentals</p>
+                      </div>
+                    </div>
+                    <div className="hidden md:flex items-center space-x-3">
+                    
+                    </div>
+                  </div>
+                </motion.div>
 
         {items.length === 0 ? (
           <motion.div
@@ -294,16 +308,7 @@ const Wishlist = () => {
                 <ItemCard key={item.id} item={item} isWishlist={true} />
               ))}
             </motion.div>
-            
-            <div className="flex justify-center mt-6">
-              <motion.button
-                className="flex items-center text-purple-600 font-medium hover:text-purple-800"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.98 }}>
-                <Gift size={16} className="mr-1" />
-                Save items for later
-              </motion.button>
-            </div>
+           
           </>
         )}
 

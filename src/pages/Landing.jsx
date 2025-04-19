@@ -75,7 +75,7 @@ const Landing = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.8 }}>
-          Rent anything from your neighbors or share what you don't use daily.
+          Need it? Rent it. Traydr's got it.
         </motion.p>
       </motion.div>
 

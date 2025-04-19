@@ -29,12 +29,12 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50  p-6 mb-8 shadow-sm"
+      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50  p-6  shadow-sm"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div className="max-w-10xl mx-auto  flex items-center ">
+        <div className="flex items-center space-x-15 mr-20">
           <Link to="/home" className="flex items-center">
             <Logo />
           </Link>
@@ -44,12 +44,12 @@ const Navbar = () => {
             className="bg-purple-700 hover:bg-purple-800 text-white px-5 py-2 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
             whileHover={{ scale: 1.03, boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)" }}
             whileTap={{ scale: 0.97 }}>
-            <Plus size={18} className="mr-1" />
+            <Plus size={18} className="mr-1 mx-auto" />
             <span>SELL</span>
           </motion.button>
         </div>
 
-        <div className="flex-1 max-w-xl mx-6">
+        <div className="flex-1 max-w-xl mx-6 mr-30">
           <div className="relative group">
             <input
               type="text"
@@ -81,7 +81,7 @@ const Navbar = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link to="/chat" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
+            <Link to="/chat" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
               <MessageCircle size={22} />
             </Link>
           </motion.div>
@@ -91,7 +91,7 @@ const Navbar = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link to="/wishlist" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
+            <Link to="/wishlist" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
               <Heart size={22} />
                           </Link>
           </motion.div>
@@ -110,7 +110,7 @@ const Navbar = () => {
             whileHover="hover"
             whileTap="tap"
           >
-            <Link to="/calendar" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
+            <Link to="/calendar" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
               <Calendar size={22} />
             </Link>
           </motion.div>
