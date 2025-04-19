@@ -17,7 +17,6 @@ const Home = () => {
   }, [user, loading, navigate]);
 
   if (loading) return <p>Loading...</p>;
-  if (!user) return null;
 
   return (
     <Layout>
