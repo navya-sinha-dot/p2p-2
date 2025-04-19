@@ -1,32 +1,37 @@
-import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
 function Sidebar() {
+  const location = useLocation();
   const categories = [
-    "Books",
-    "Tools & Equipment",
-    "Electronics & Gadgets",
-    "Tech Accessories",
-    "Apparel & Fashion",
-    "Fitness & Sports Gear",
-    "Event & Party Supplies",
-    "Travel & Lifestyle Gear",
-    "Furniture",
+    { name: "Books", path: "/books" },
+    { name: "Tools & Equipment", path: "/tools" },
+    { name: "Electronics & Gadgets", path: "/electronics" },
+    { name: "Tech Accessories", path: "/tech" },
+    { name: "Apparel & Fashion", path: "/apparel" },
+    { name: "Fitness & Sports Gear", path: "/fitness" },
+    { name: "Event & Party Supplies", path: "/events" },
+    { name: "Travel & Lifestyle Gear", path: "/travel" },
+    { name: "Furniture", path: "/furniture" },
   ];
 
   return (
-    <div className="w-48 bg-amber-50 shadow-md">
-      <h3 className="px-4 py-3 font-bold text-sm">CATEGORIES</h3>
+    <div className="w-48 bg-white shadow-md h-screen">
+      <h3 className="px-4 py-3 font-bold text-sm text-purple-700">
+        CATEGORIES
+      </h3>
       <ul>
-        {categories.map((category, index) => (
-          <li
-            key={index}
-            className={`px-4 py-3 cursor-pointer text-sm transition-colors hover:bg-[#FBE4D6]
-              ${
-                category === "Event & Party Supplies"
-                  ? "bg-pink-200 font-bold"
-                  : ""
-              }`}>
-            {category}
+        {categories.map((category) => (
+          <li key={category.path}>
+            <Link
+              to={category.path}
+              className={`block px-4 py-3 cursor-pointer text-sm transition-colors hover:bg-purple-100
+                ${
+                  location.pathname === category.path
+                    ? "bg-purple-500 text-white font-bold"
+                    : "text-gray-700"
+                }`}>
+              {category.name}
+            </Link>
           </li>
         ))}
       </ul>

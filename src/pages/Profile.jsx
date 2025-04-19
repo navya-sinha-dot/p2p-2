@@ -1,313 +1,241 @@
-import React, { useState } from "react";
+"use client";
 import { motion } from "framer-motion";
-import {
-  Settings,
-  Star,
-  Package,
-  History,
-  CreditCard,
-  Bell,
-  Shield,
-  LogOut,
-} from "lucide-react";
 import Layout from "../components/layout/Layout";
-import { useAuth } from "../context/AuthContext";
+import { Line, Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-const Profile = () => {
-  const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("rentals");
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
-  // Mock rental history data
-  const rentals = [
-    {
-      id: "1",
-      type: "rented",
-      name: "Professional DSLR Camera Kit",
-      date: "2024-02-15",
-      status: "active",
-      image: "https://images.pexels.com/photos/243757/pexels-photo-243757.jpeg",
-      price: 299,
-      owner: "Rahul Verma",
-    },
-    {
-      id: "2",
-      type: "lent",
-      name: "Kids Party Setup",
-      date: "2024-02-10",
-      status: "completed",
-      image: "https://images.pexels.com/photos/796605/pexels-photo-796605.jpeg",
-      price: 49,
-      renter: "Priya Sharma",
-    },
-  ];
+const ProfilePage = () => {
+  // Activity data for charts
+  const lineChartData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    datasets: [
+      {
+        label: "Rental Activity",
+        data: [3, 5, 2, 8, 6, 7],
+        borderColor: "#8b5cf6", // purple-500
+        backgroundColor: "rgba(139, 92, 246, 0.1)",
+        tension: 0.3,
+      },
+    ],
+  };
 
-  // Mock reviews data
-  const reviews = [
-    {
-      id: "r1",
-      rating: 5,
-      comment: "Great experience! The camera was in perfect condition.",
-      from: "Arjun M.",
-      date: "2024-02-18",
+  const barChartData = {
+    labels: ["Listed", "Rented", "Returned", "Reviewed"],
+    datasets: [
+      {
+        label: "Item Status",
+        data: [12, 8, 6, 4],
+        backgroundColor: "#6d28d9", // purple-700
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false,
+      },
+      title: {
+        display: true,
+        text: "Activity Overview",
+        color: "#6d28d9",
+        font: {
+          size: 14,
+          weight: "bold",
+        },
+      },
     },
-    {
-      id: "r2",
-      rating: 4,
-      comment: "Very professional and punctual with delivery.",
-      from: "Neha K.",
-      date: "2024-02-12",
+    scales: {
+      y: {
+        beginAtZero: true,
+      },
     },
-  ];
+  };
 
   return (
-    <Layout showSidebar={false}>
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <Layout>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="min-h-screen bg-purple-50 pb-10">
         {/* Profile Header */}
-        <motion.div
-          className="bg-white rounded-lg shadow-sm p-6 mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
-          <div className="flex items-center">
-            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mr-6">
-              {user?.avatar ? (
-                <img
-                  src={user.avatar}
-                  alt={user.name}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              ) : (
-                <span className="text-3xl text-gray-600">
-                  {user?.name?.[0]}
-                </span>
-              )}
-            </div>
+        <div className="bg-white shadow-sm">
+          <div className="max-w-6xl mx-auto px-4 py-6">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Profile Info */}
+              <div className="flex flex-col md:flex-row items-start gap-6">
+                <div className="w-32 h-32 border-2 border-purple-300 rounded-lg overflow-hidden">
+                  <img
+                    src="/profile-placeholder.svg"
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
 
-            <div>
-              <h1 className="text-2xl font-bold mb-2">{user?.name}</h1>
-              <p className="text-gray-600 mb-2">{user?.email}</p>
-              <div className="flex items-center">
-                <Star size={16} className="text-yellow-500 mr-1" />
-                <span className="font-medium">4.8</span>
-                <span className="text-gray-500 ml-1">(32 reviews)</span>
-              </div>
-            </div>
-
-            <motion.button
-              className="ml-auto flex items-center px-4 py-2 bg-gray-100 rounded-md text-sm font-medium"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}>
-              <Settings size={16} className="mr-2" />
-              Edit Profile
-            </motion.button>
-          </div>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <motion.div
-            className="space-y-2"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}>
-            <button
-              onClick={() => setActiveTab("rentals")}
-              className={`w-full flex items-center p-3 rounded-md text-left ${
-                activeTab === "rentals"
-                  ? "bg-pink-50 text-purple-600"
-                  : "hover:bg-gray-50"
-              }`}>
-              <Package size={20} className="mr-3" />
-              <span>Rentals</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("history")}
-              className={`w-full flex items-center p-3 rounded-md text-left ${
-                activeTab === "history"
-                  ? "bg-pink-50 text-purple-600"
-                  : "hover:bg-gray-50"
-              }`}>
-              <History size={20} className="mr-3" />
-              <span>History</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("payments")}
-              className={`w-full flex items-center p-3 rounded-md text-left ${
-                activeTab === "payments"
-                  ? "bg-pink-50 text-purple-600"
-                  : "hover:bg-gray-50"
-              }`}>
-              <CreditCard size={20} className="mr-3" />
-              <span>Payments</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("notifications")}
-              className={`w-full flex items-center p-3 rounded-md text-left ${
-                activeTab === "notifications"
-                  ? "bg-pink-50 text-purple-600"
-                  : "hover:bg-gray-50"
-              }`}>
-              <Bell size={20} className="mr-3" />
-              <span>Notifications</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("security")}
-              className={`w-full flex items-center p-3 rounded-md text-left ${
-                activeTab === "security"
-                  ? "bg-pink-50 text-purple-600"
-                  : "hover:bg-gray-50"
-              }`}>
-              <Shield size={20} className="mr-3" />
-              <span>Security</span>
-            </button>
-
-            <button
-              onClick={logout}
-              className="w-full flex items-center p-3 rounded-md text-left text-red-600 hover:bg-red-50">
-              <LogOut size={20} className="mr-3" />
-              <span>Logout</span>
-            </button>
-          </motion.div>
-
-          {/* Main Content */}
-          <motion.div
-            className="md:col-span-3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}>
-            {activeTab === "rentals" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Active Rentals</h2>
-                <div className="space-y-4">
-                  {rentals.map((rental) => (
-                    <motion.div
-                      key={rental.id}
-                      className="bg-white rounded-lg shadow-sm p-4 flex"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}>
-                      <img
-                        src={rental.image}
-                        alt={rental.name}
-                        className="w-24 h-24 object-cover rounded-md"
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                    NAME SURNAME
+                  </h1>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
+                    </svg>
+                    <span>MEMBER SINCE 19.04.24</span>
+                  </div>
 
-                      <div className="ml-4 flex-1">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{rental.name}</h3>
-                            <p className="text-sm text-gray-500">
-                              {rental.type === "rented"
-                                ? `Rented from ${rental.owner}`
-                                : `Lent to ${rental.renter}`}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Started:{" "}
-                              {new Date(rental.date).toLocaleDateString()}
-                            </p>
-                          </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                    <span>0 FOLLOWERS / 0 FOLLOWING</span>
+                  </div>
 
-                          <div
-                            className={`px-3 py-1 rounded-full text-sm ${
-                              rental.status === "active"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-gray-100 text-gray-800"
-                            }`}>
-                            {rental.status}
-                          </div>
-                        </div>
-
-                        <div className="mt-3 flex justify-between items-center">
-                          <p className="font-medium">
-                            ₹ {rental.price} per week
-                          </p>
-                          <motion.button
-                            className="px-4 py-2 bg-purple-600 text-white rounded-md text-sm font-medium"
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}>
-                            View Details
-                          </motion.button>
-                        </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <span>USER VERIFIED WITH</span>
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-full overflow-hidden">
+                        <img
+                          src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
+                          alt="Google"
+                          className="w-full h-full object-contain"
+                        />
                       </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                <h2 className="text-xl font-bold mt-8 mb-4">Reviews</h2>
-                <div className="space-y-4">
-                  {reviews.map((review) => (
-                    <motion.div
-                      key={review.id}
-                      className="bg-white rounded-lg shadow-sm p-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}>
-                      <div className="flex items-center mb-2">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              size={16}
-                              className={
-                                i < review.rating
-                                  ? "text-yellow-500"
-                                  : "text-gray-300"
-                              }
-                            />
-                          ))}
-                        </div>
-                        <span className="ml-2 text-sm text-gray-500">
-                          from {review.from}
-                        </span>
+                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4 text-gray-600"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                          />
+                        </svg>
                       </div>
-                      <p className="text-gray-700">{review.comment}</p>
-                      <p className="text-sm text-gray-500 mt-2">
-                        {new Date(review.date).toLocaleDateString()}
-                      </p>
-                    </motion.div>
-                  ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex gap-4">
+                    <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors">
+                      EDIT PROFILE
+                    </button>
+                    <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors">
+                      LOG OUT
+                    </button>
+                  </div>
                 </div>
               </div>
-            )}
 
-            {activeTab === "history" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Rental History</h2>
-                {/* Add rental history content */}
+              {/* Activity Charts */}
+              <div className="md:ml-auto w-full md:w-96 bg-white rounded-lg p-4 shadow-sm">
+                <div className="mb-4">
+                  <Line
+                    data={lineChartData}
+                    options={chartOptions}
+                    height={100}
+                  />
+                </div>
+                <div>
+                  <Bar
+                    data={barChartData}
+                    options={chartOptions}
+                    height={100}
+                  />
+                </div>
               </div>
-            )}
-
-            {activeTab === "payments" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Payment Methods</h2>
-                {/* Add payments content */}
-              </div>
-            )}
-
-            {activeTab === "notifications" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">
-                  Notification Settings
-                </h2>
-                {/* Add notifications content */}
-              </div>
-            )}
-
-            {activeTab === "security" && (
-              <div>
-                <h2 className="text-xl font-bold mb-4">Security Settings</h2>
-                {/* Add security content */}
-              </div>
-            )}
-          </motion.div>
+            </div>
+          </div>
         </div>
-      </div>
+
+        {/* Profile Navigation */}
+        <div className="max-w-6xl mx-auto px-4 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-2 border border-gray-200 rounded-lg overflow-hidden">
+            <button className="py-3 px-4 bg-gray-100 text-purple-700 font-medium hover:bg-gray-200 transition-colors">
+              MY LISTINGS
+            </button>
+            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+              MY RENTALS
+            </button>
+            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+              BUY BUSINESS PACKAGES
+            </button>
+            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+              RATINGS AND REVIEWS
+            </button>
+            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+              HELP
+            </button>
+          </div>
+        </div>
+
+        {/* Empty State */}
+        <div className="max-w-6xl mx-auto px-4 mt-12">
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="w-20 h-20 mb-4">
+              <img
+                src="/empty-state.svg"
+                alt="No listings"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-gray-600 mb-6">
+              YOU HAVEN'T LISTED ANYTHING YET
+            </p>
+            <button className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors">
+              START SELLING
+            </button>
+          </div>
+        </div>
+      </motion.div>
     </Layout>
   );
 };
 
-export default Profile;
+export default ProfilePage;

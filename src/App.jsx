@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import Calendar from "./pages/Calender";
+import ProfilePage from "./pages/Profile";
 
 // Context providers
 import { AuthProvider } from "./context/AuthContext";
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/wishlist" element={<Wishlist />} />
                 <Route path="/calendar" element={<Calendar />} />
+                <Route path="/profile" element={<ProfilePage />} />
               </Routes>
             </AnimatePresence>
           </UIProvider>
