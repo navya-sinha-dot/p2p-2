@@ -4,8 +4,12 @@ import { Box } from "lucide-react";
 const Logo = () => {
   return (
     <div className="flex items-center">
-      <Box size={24} className="text-purple-700" />
-      <span className="ml-2 font-bold text-xl">Traydr</span>
+      <img
+        src="image-removebg-preview.png"
+        alt="TradyR Logo"
+        width='50px'
+      />
+      <span className="ml-0.001 font-bold text-3xl">Traydr</span>
     </div>
   );
 };
