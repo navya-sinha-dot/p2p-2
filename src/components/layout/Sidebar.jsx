@@ -2,7 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const categories = [
-  { id: "books", name: "Books" },
+  { id: "books", name: "Books"},
   { id: "tools", name: "Tools & Equipment" },
   { id: "electronics", name: "Electronics & Gadgets" },
   { id: "tech-accessories", name: "Tech Accessories" },

@@ -13,7 +13,7 @@ const GoogleLoginButton = () => {
   }, [user, loading, navigate]);
 
   const loginWithGoogle = () => {
-    window.open("https://p2p-backend-gnjb.onrender.com/auth/google", "_self");
+    window.open("https://auth/google", "_self");
   };
 
   if (loading) return <p>Loading...</p>;

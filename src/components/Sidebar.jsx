@@ -13,7 +13,7 @@ function Sidebar() {
     { name: "Travel & Lifestyle Gear", path: "/travel" },
     { name: "Furniture", path: "/furniture" },
   ];
-
+  
   return (
     <div className="w-48 bg-white shadow-md h-screen">
       <h3 className="px-4 py-3 font-bold text-sm text-purple-700">
