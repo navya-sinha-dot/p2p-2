@@ -29,7 +29,7 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="bg-gradient-to-r from-purple-100 to-purple-200 py-3 px-6 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90"
+      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50  p-6 mb-8 shadow-sm"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}>
@@ -93,8 +93,7 @@ const Navbar = () => {
           >
             <Link to="/wishlist" className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center justify-center">
               <Heart size={22} />
-              <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">2</span>
-            </Link>
+                          </Link>
           </motion.div>
           
           <motion.div 

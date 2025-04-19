@@ -217,7 +217,7 @@ const Chat = () => {
         <AnimatePresence>
           {(showChatList || !isMobileView) && (
             <motion.div
-              className="w-full md:w-80 border-r border-gray-200 bg-white overflow-hidden flex flex-col"
+              className="w-full md:w-100 border-r border-gray-200 bg-white overflow-hidden flex flex-col"
               initial={{ opacity: 0, x: isMobileView ? -280 : -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -280 }}
