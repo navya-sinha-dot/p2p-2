@@ -587,7 +587,7 @@ const BooksCategoryPage = () => {
 
         {/* Books Grid */}
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-          {booksData.map((book) => (
+          {filteredBooks.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
           {filteredBooks.length === 0 && (
