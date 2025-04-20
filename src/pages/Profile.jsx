@@ -94,9 +94,9 @@ const ProfilePage = () => {
             <div className="flex flex-col md:flex-row gap-8">
               {/* Profile Info */}
               <div className="flex flex-col md:flex-row items-start gap-6">
-                <div className="w-32 h-32 border-2 border-purple-300 rounded-lg overflow-hidden">
+                <div className="w-32 h-32 border-2 border-purple-300 rounded-full overflow-hidden">
                   <img
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGhZ-SF89fyG_BeqA-qcKukcn6yZiBF6MZVw&s"
+                    src={user?.avatar}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />

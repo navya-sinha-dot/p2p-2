@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Sidebar() {
-  const location = useLocation();
+  const navigate = useNavigate();
   const categories = [
     { name: "Books", path: "/books" },
     { name: "Tools & Equipment", path: "/tools" },
@@ -13,7 +13,7 @@ function Sidebar() {
     { name: "Travel & Lifestyle Gear", path: "/travel" },
     { name: "Furniture", path: "/furniture" },
   ];
-  
+
   return (
     <div className="w-48 bg-white shadow-md h-screen">
       <h3 className="px-4 py-3 font-bold text-sm text-purple-700">
@@ -22,16 +22,17 @@ function Sidebar() {
       <ul>
         {categories.map((category) => (
           <li key={category.path}>
-            <Link
-              to={category.path}
+            <div
+              onClick={() => navigate(category.path)}
               className={`block px-4 py-3 cursor-pointer text-sm transition-colors hover:bg-purple-100
                 ${
                   location.pathname === category.path
                     ? "bg-purple-500 text-white font-bold"
                     : "text-gray-700"
-                }`}>
+                }`}
+            >
               {category.name}
-            </Link>
+            </div>
           </li>
         ))}
       </ul>

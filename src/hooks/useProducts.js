@@ -12,6 +12,6 @@ export function useProducts() {
       .catch((err) => {
         console.log(err);
       });
-  }, [products]);
+  }, []);
   return products;
 }
