@@ -1,263 +1,176 @@
-import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Trash2, Calendar, ShoppingBag } from "lucide-react";
-import Layout from "../components/layout/Layout";
-import { useCart } from "../context/CartContext";
+import { Minus, Plus, Trash2 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Cart = () => {
+const CartPage = () => {
   const navigate = useNavigate();
-  const { items, removeFromCart, getTotalPrice, getTotalDeposit } = useCart();
-  const [rentalDuration, setRentalDuration] = useState({});
-  const [showItems, setShowItems] = useState(false);
-  const itemsRef = useRef(null);
+  const location = useLocation();
+  
+  // Initialize with packages from location state, or empty array if none
+  const [cartItems, setCartItems] = useState([]);
+  const [quantities, setQuantities] = useState({});
+  
+  useEffect(() => {
+    // Check if we have items passed from the premium ads page
+    if (location.state?.selectedPackages) {
+      const packages = location.state.selectedPackages;
+      setCartItems(packages);
+      
+      // Initialize quantities (default to 1 for each item)
+      const initialQuantities = {};
+      packages.forEach(pkg => {
+        initialQuantities[pkg.id] = 1;
+      });
+      setQuantities(initialQuantities);
+    }
+  }, [location.state]);
 
-  // Sample items to display when Browse Items is clicked
-  const availableItems = [
-    {
-      id: "item1",
-      name: "DSLR Camera",
-      price: 799,
-      image: "/api/placeholder/100/100",
-      deposit: 2000,
-    },
-    {
-      id: "item2",
-      name: "Camping Tent",
-      price: 350,
-      image: "/api/placeholder/100/100",
-      deposit: 1000,
-    },
-    {
-      id: "item3",
-      name: "Mountain Bike",
-      price: 599,
-      image: "/api/placeholder/100/100",
-      deposit: 1500,
-    },
-    {
-      id: "item4",
-      name: "Drone",
-      price: 899,
-      image: "/api/placeholder/100/100",
-      deposit: 2500,
-    },
-  ];
-
-  const updateDuration = (itemId, duration) => {
-    setRentalDuration((prev) => ({ ...prev, [itemId]: duration }));
+  const handleQuantityChange = (id, amount) => {
+    setQuantities(prev => {
+      const newQuantity = (prev[id] || 1) + amount;
+      if (newQuantity < 1) return prev;
+      return { ...prev, [id]: newQuantity };
+    });
   };
 
-  const handleCheckout = () => {
-    // In a real app, this would initiate the payment process
-    alert("Payment gateway would open here!");
+  const removeItem = (id) => {
+    setCartItems(cartItems.filter(item => item.id !== id));
+    setQuantities(prev => {
+      const newQuantities = { ...prev };
+      delete newQuantities[id];
+      return newQuantities;
+    });
   };
 
-  const handleBrowseItems = () => {
-    setShowItems(true);
-    // Use setTimeout to ensure the state is updated before scrolling
-    setTimeout(() => {
-      if (itemsRef.current) {
-        itemsRef.current.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-      }
-    }, 100);
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => {
+      return total + (item.price * (quantities[item.id] || 1));
+    }, 0);
   };
 
-  const handleListYourItem = () => {
-    // This would navigate to the sell/list page, similar to what "sell" button does
-    navigate("/sell");
+  const calculateTotalDiscount = () => {
+    return cartItems.reduce((total, item) => {
+      const originalPrice = item.originalPrice * (quantities[item.id] || 1);
+      const discountedPrice = item.price * (quantities[item.id] || 1);
+      return total + (originalPrice - discountedPrice);
+    }, 0);
   };
+
+  const handlePayment = () => {
+    // In a real app, this would redirect to payment gateway
+    alert("Redirecting to payment gateway...");
+    // navigate("/payment-success");
+  };
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="bg-purple-50 min-h-screen py-12 px-4 flex flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold text-purple-900 mb-4">Your cart is empty</h1>
+        <p className="text-purple-700 mb-8">Looks like you haven't added any items to your cart yet.</p>
+        <button 
+          onClick={() => navigate("/premium-ads")}
+          className="bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+        >
+          Browse Premium Ads
+        </button>
+      </div>
+    );
+  }
 
   return (
-    <Layout showSidebar={false}>
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <motion.h1
-          className="text-2xl font-bold mb-6"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}>
-          Your Cart
-        </motion.h1>
-
-        {items.length === 0 ? (
-          <motion.div
-            className="text-center py-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}>
-            <p className="text-gray-500 mb-6">Your cart is empty</p>
-            <div className="space-y-4">
-              <button
-                onClick={handleBrowseItems}
-                className="px-6 py-2 bg-purple-600 text-white rounded-md font-medium">
-                Browse Items
-              </button>
-              <div className="mt-4">
-                <button
-                  onClick={handleListYourItem}
-                  className="px-6 py-2 border border-purple-600 text-purple-600 rounded-md font-medium">
-                  List Your Item
-                </button>
+    <motion.div 
+      className="bg-purple-50 min-h-screen py-12"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-4xl mx-auto px-4">
+        <h1 className="text-2xl font-bold text-purple-900 mb-8 text-center">Shopping Cart</h1>
+        
+        <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+          {cartItems.map((item) => (
+            <div key={item.id} className="p-6 border-b border-purple-100 relative">
+              <div className="absolute top-6 left-0 bg-purple-600 text-xs font-bold px-2 py-1 text-white">
+                -{item.discount}%
               </div>
-            </div>
-          </motion.div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <motion.div
-              className="md:col-span-2 space-y-4"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}>
-              {items.map((item) => (
-                <motion.div
-                  key={item.id}
-                  className="bg-white rounded-lg shadow-sm p-4 flex"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-24 h-24 object-cover rounded-md mr-4"
-                  />
-
-                  <div className="flex-1">
-                    <div className="flex justify-between">
-                      <h3 className="font-medium">{item.name}</h3>
-                      <button
-                        onClick={() => removeFromCart(item.id)}
-                        className="text-gray-400 hover:text-red-500">
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-
-                    <p className="text-gray-500 text-sm mb-2">
-                      ₹ {item.price} per week
-                    </p>
-
-                    <div className="flex items-center mt-2">
-                      <label className="text-sm mr-2 flex items-center">
-                        <Calendar size={16} className="mr-1" />
-                        Rental Duration:
-                      </label>
-                      <select
-                        value={rentalDuration[item.id] || item.duration}
-                        onChange={(e) =>
-                          updateDuration(item.id, parseInt(e.target.value))
-                        }
-                        className="text-sm border border-gray-300 rounded-md px-2 py-1">
-                        <option value={7}>1 week</option>
-                        <option value={14}>2 weeks</option>
-                        <option value={21}>3 weeks</option>
-                        <option value={28}>4 weeks</option>
-                      </select>
-                    </div>
+              
+              <div className="pl-12 flex flex-col md:flex-row md:justify-between md:items-center">
+                <div className="mb-4 md:mb-0">
+                  <h2 className="text-lg font-bold text-purple-900">
+                    {item.ads} {item.type} {item.days ? `(${item.days} days)` : ""} Ads
+                  </h2>
+                  <p className="text-purple-600 text-sm">
+                    {item.type === 'Auto-Boost' ? 'Automatically boosted to top positions' : 
+                      item.type === 'Featured' ? `Featured placement for ${item.days} days` :
+                      'Premium combo with Auto-Boost and Featured benefits'}
+                  </p>
+                  
+                  <div className="mt-2">
+                    <p className="text-xl font-bold text-purple-900">₹ {item.price.toLocaleString()}</p>
+                    <p className="text-purple-400 line-through text-sm">₹ {item.originalPrice.toLocaleString()}</p>
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
-
-            <motion.div
-              className="bg-white rounded-lg shadow-sm p-6"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}>
-              <h2 className="font-bold text-lg mb-4">Order Summary</h2>
-
-              <div className="space-y-2 mb-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span>₹ {getTotalPrice()}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Security Deposit</span>
-                  <span>₹ {getTotalDeposit()}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">Platform Fee</span>
-                  <span>₹ {Math.round(getTotalPrice() * 0.05)}</span>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-4 mb-6">
-                <div className="flex justify-between font-bold">
-                  <span>Total</span>
-                  <span>
-                    ₹{" "}
-                    {getTotalPrice() +
-                      getTotalDeposit() +
-                      Math.round(getTotalPrice() * 0.05)}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-500 mt-1">
-                  Security deposit will be refunded after the rental period
-                  ends.
-                </p>
-              </div>
-
-              <motion.button
-                onClick={handleCheckout}
-                className="w-full py-3 bg-purple-600 text-white rounded-md font-medium"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}>
-                Proceed to Payment
-              </motion.button>
-
-              <button
-                onClick={() => navigate("/home")}
-                className="w-full text-center mt-4 text-sm text-gray-600 hover:text-purple-600">
-                Continue Shopping
-              </button>
-            </motion.div>
-          </div>
-        )}
-
-        {/* Available Items Section - shown when Browse Items is clicked */}
-        {showItems && (
-          <motion.div
-            ref={itemsRef}
-            className="mt-16 pt-8 border-t border-gray-200"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}>
-            <h2 className="text-xl font-bold mb-6 flex items-center">
-              <ShoppingBag size={20} className="mr-2" />
-              Available Items
-            </h2>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {availableItems.map((item) => (
-                <motion.div
-                  key={item.id}
-                  className="bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow"
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: 0.2 }}>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-40 object-cover rounded-md mb-3"
-                  />
-                  <h3 className="font-medium text-gray-800">{item.name}</h3>
-                  <p className="text-gray-500 text-sm">
-                    ₹ {item.price} per week
-                  </p>
-                  <p className="text-gray-500 text-xs">
-                    Deposit: ₹ {item.deposit}
-                  </p>
-                  <button className="mt-3 w-full py-2 bg-purple-600 text-white rounded-md text-sm font-medium">
-                    Add to Cart
+                
+                <div className="flex items-center">
+                  <div className="flex items-center border border-purple-200 rounded-md mr-4">
+                    <button 
+                      onClick={() => handleQuantityChange(item.id, -1)}
+                      className="px-3 py-1 text-purple-700 hover:bg-purple-100"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="px-4 py-1 border-x border-purple-200">{quantities[item.id] || 1}</span>
+                    <button 
+                      onClick={() => handleQuantityChange(item.id, 1)}
+                      className="px-3 py-1 text-purple-700 hover:bg-purple-100"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                  
+                  <button 
+                    onClick={() => removeItem(item.id)}
+                    className="p-2 text-purple-700 hover:text-purple-900 hover:bg-purple-100 rounded-full"
+                  >
+                    <Trash2 size={20} />
                   </button>
-                </motion.div>
-              ))}
+                </div>
+              </div>
             </div>
-          </motion.div>
-        )}
+          ))}
+          
+          <div className="p-6">
+            <h3 className="font-bold text-purple-900 mb-4 border-b border-purple-100 pb-2">PRICE DETAILS</h3>
+            <div className="space-y-3">
+              <div className="flex justify-between">
+                <span>Price ({cartItems.length} items)</span>
+                <span>₹ {(calculateSubtotal() + calculateTotalDiscount()).toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between text-green-600">
+                <span>Discount</span>
+                <span>-₹ {calculateTotalDiscount().toLocaleString()}</span>
+              </div>
+              <div className="border-t border-purple-100 pt-3 flex justify-between font-bold text-lg">
+                <span>Total Amount</span>
+                <span>₹ {calculateSubtotal().toLocaleString()}</span>
+              </div>
+              <div className="pt-2 text-green-600 text-sm">
+                <p>You will save ₹ {calculateTotalDiscount().toLocaleString()} on this order</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button 
+          onClick={handlePayment}
+          className="w-full bg-purple-700 hover:bg-purple-800 text-white py-4 rounded-md font-medium text-lg shadow-md transition-colors duration-200"
+        >
+          Pay ₹ {calculateSubtotal().toLocaleString()}
+        </button>
       </div>
-    </Layout>
+    </motion.div>
   );
 };
 
-export default Cart;
+export default CartPage;

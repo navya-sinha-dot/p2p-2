@@ -12,6 +12,8 @@ import Wishlist from "./pages/Wishlist";
 import Calendar from "./pages/Calender";
 import ProfilePage from "./pages/Profile";
 import BooksPage from "./pages/BooksCategoryPage";
+import PremiumAdsPage from "./pages/PremiumAdsPage";
+import CartPage from "./pages/CartPage";
 
 
 // Context providers
@@ -38,6 +40,8 @@ function App() {
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/books" element={<BooksPage />} />
+                <Route path="/premium-ads" element={<PremiumAdsPage />} />
+                <Route path="/cart" element={<CartPage />} />
               </Routes>
             </AnimatePresence>
           </UIProvider>
