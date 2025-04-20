@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { X, Camera, Upload, Plus } from "lucide-react";
+import { X, Leaf, Camera, Upload, Plus } from "lucide-react";
 import { useUI } from "../../context/UIContext";
 import { useAuth } from "../../hooks/useAuth";
 import axios from "axios";
@@ -16,15 +16,15 @@ const categories = [
   { id: "furniture", name: "Furniture" },
 ];
 
-const SellModal = () => {
+const DonateModal = () => {
   const {
-    closeSellModal,
-    sellFormData,
-    updateSellFormData,
-    resetSellFormData,
+    closeDonateModal,
+    donateFormData,
+    updateDonateFormData,
+    resetDonateFormData,
   } = useUI();
   const [step, setStep] = useState(1);
-  const [image, setImage] = useState(null); // Changed from images array to single image
+  const [image, setImage] = useState(null);
   const [showCamera, setShowCamera] = useState(false);
   const [uploadedUrl, setUploadedUrl] = useState(null);
   const { user } = useAuth();
@@ -39,34 +39,29 @@ const SellModal = () => {
     e.preventDefault();
     // Include the image in the form data
     const formDataWithImage = {
-      ...sellFormData,
+      ...donateFormData,
       image: image,
     };
 
     if (!user) {
       console.error("User is not authenticated");
       // Handle the case when user is not logged in
-      // Maybe show an error message or redirect to login
       return;
     }
 
-    console.log("Submitted form data:", formDataWithImage);
+    console.log("Submitted donation form data:", formDataWithImage);
     try {
-      await axios.post(`http://localhost:3001/sell/${user.id}`, {
-        name: sellFormData.itemName,
-        description: sellFormData.description,
-        price: parseFloat(sellFormData.price),
-        image: uploadedUrl, // Changed from images[0]?.url to image?.url
-        duration: sellFormData.duration,
-        category: sellFormData.category,
-        prodInRoom: !!sellFormData.prodInRoom,
-        roomId: sellFormData.roomId ? parseInt(sellFormData.roomId) : null,
+      await axios.post(`http://localhost:3001/donate/${user.id}`, {
+        name: donateFormData.itemName,
+        description: donateFormData.description,
+        image: uploadedUrl,
+        category: donateFormData.category,
       });
     } catch (error) {
-      console.error("Error submitting form:", error);
+      console.error("Error submitting donation form:", error);
     }
-    resetSellFormData();
-    closeSellModal();
+    resetDonateFormData();
+    closeDonateModal();
   };
 
   const handleNext = () => {
@@ -161,25 +156,7 @@ const SellModal = () => {
 
   // Handle file upload
   const handleFileUpload = async () => {
-    //   if (fileInputRef.current) {
-    //     fileInputRef.current.click();
-    //   }
-    // };
-    // // Process the captured image or uploaded file
-    // const processImage = (file) => {
-    //   if (!file) return;
-    //   // Create a URL for the image
-    //   const imageUrl = URL.createObjectURL(file);
-    //   // Set the image (replacing any previous image)
-    //   setImage({ file, url: imageUrl });
-    //   // Update the form data to indicate we have an image
-    //   updateSellFormData({
-    //     ...sellFormData,
-    //     hasImages: true,
-    //   });
-
-    if (!image) return;
-    alert("Image is getting uploaded,please wait");
+    if (!image) return alert("No image selected");
 
     try {
       const res = await axios.post(`http://localhost:3001/upload`, {
@@ -189,6 +166,20 @@ const SellModal = () => {
     } catch (error) {
       console.error("Error uploading image:", error);
     }
+  };
+
+  // Process the captured image or uploaded file
+  const processImage = (file) => {
+    if (!file) return;
+    // Create a URL for the image
+    const imageUrl = URL.createObjectURL(file);
+    // Set the image
+    setImage({ file, url: imageUrl });
+    // Update the form data to indicate we have an image
+    updateDonateFormData({
+      ...donateFormData,
+      hasImages: true,
+    });
   };
 
   // Handle camera input change
@@ -201,7 +192,6 @@ const SellModal = () => {
   // Handle file input change
   const handleFileInputChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      // Process only the first file
       processImage(e.target.files[0]);
     }
   };
@@ -212,8 +202,8 @@ const SellModal = () => {
       URL.revokeObjectURL(image.url); // Clean up the object URL
     }
     setImage(null);
-    updateSellFormData({
-      ...sellFormData,
+    updateDonateFormData({
+      ...donateFormData,
       hasImages: false,
     });
   };
@@ -221,11 +211,12 @@ const SellModal = () => {
   return (
     <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full overflow-hidden">
-        <div className="flex justify-between items-center border-b p-4 bg-purple-600 text-white">
-          <h3 className="text-lg font-medium">List an item for rent</h3>
+        <div className="flex justify-between items-center border-b p-4 bg-green-600 text-white">
+          <h3 className="text-lg font-medium">Donate an item</h3>
           <button
-            onClick={closeSellModal}
-            className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1">
+            onClick={closeDonateModal}
+            className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1"
+          >
             <X size={20} />
           </button>
         </div>
@@ -234,19 +225,19 @@ const SellModal = () => {
         <div className="px-6 pt-4">
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className="bg-purple-600 h-2 rounded-full"
+              className="bg-green-600 h-2 rounded-full"
               style={{ width: `${(step / 3) * 100}%` }}
             />
           </div>
           <div className="flex justify-between text-xs text-gray-500 mt-1">
-            <span className={step >= 1 ? "text-purple-600 font-medium" : ""}>
+            <span className={step >= 1 ? "text-green-600 font-medium" : ""}>
+              About Donations
+            </span>
+            <span className={step >= 2 ? "text-green-600 font-medium" : ""}>
               Category
             </span>
-            <span className={step >= 2 ? "text-purple-600 font-medium" : ""}>
-              Details
-            </span>
-            <span className={step >= 3 ? "text-purple-600 font-medium" : ""}>
-              Pricing & Images
+            <span className={step >= 3 ? "text-green-600 font-medium" : ""}>
+              Details & Image
             </span>
           </div>
         </div>
@@ -255,22 +246,56 @@ const SellModal = () => {
           <div className="p-6">
             {step === 1 && (
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-700">
-                  What category is your item?
-                </h4>
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                  <div className="flex items-center mb-3">
+                    <div className="bg-green-100 p-2 rounded-full mr-3">
+                      <Leaf className="text-green-600" size={24} />
+                    </div>
+                    <h4 className="text-lg font-medium text-green-800">Our Donation Drive</h4>
+                  </div>
+                  
+                  <p className="text-green-800 mb-3">
+                    Thank you for considering donating your items! Your generosity helps us build a stronger community.
+                  </p>
+                  
+                  <p className="text-green-700 mb-3">
+                    Instead of letting unused items collect dust or throwing them away, your donations will find new homes through our NGO partnerships, helping those in need.
+                  </p>
+                  
+                  <p className="text-green-700 mb-3">
+                    We carefully collect these items and work with trusted NGOs to ensure they reach people who will truly benefit from them.
+                  </p>
+                  
+                  <div className="bg-white p-3 rounded-md border border-green-200 mt-4">
+                    <h5 className="font-medium text-green-800 mb-2">How it works:</h5>
+                    <ul className="list-disc list-inside text-green-700 space-y-1">
+                      <li>You donate items you no longer need</li>
+                      <li>We arrange pick-up at your convenience</li>
+                      <li>Items are distributed through our NGO partners</li>
+                      <li>You receive updates on the impact of your donation</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div className="space-y-4">
+                <h4 className="font-medium text-gray-700">What category is your donation?</h4>
                 <div className="grid grid-cols-2 gap-3">
                   {categories.map((category) => (
                     <button
                       key={category.id}
                       type="button"
                       className={`py-2 px-3 rounded-md border text-left transition-colors ${
-                        sellFormData.category === category.id
-                          ? "border-purple-500 bg-purple-50 text-purple-700"
+                        donateFormData.category === category.id
+                          ? "border-green-500 bg-green-50 text-green-700"
                           : "border-gray-300 hover:bg-gray-50"
                       }`}
                       onClick={() =>
-                        updateSellFormData({ category: category.id })
-                      }>
+                        updateDonateFormData({ category: category.id })
+                      }
+                    >
                       {category.name}
                     </button>
                   ))}
@@ -279,7 +304,8 @@ const SellModal = () => {
                 <div className="mt-3">
                   <button
                     type="button"
-                    className="text-sm text-purple-600 hover:text-purple-800 flex items-center">
+                    className="text-sm text-green-600 hover:text-green-800 flex items-center"
+                  >
                     <Plus size={16} className="mr-1" />
                     Request to add a new category
                   </button>
@@ -287,9 +313,9 @@ const SellModal = () => {
               </div>
             )}
 
-            {step === 2 && (
+            {step === 3 && (
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-700">Item details</h4>
+                <h4 className="font-medium text-gray-700">Donation details</h4>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -297,12 +323,12 @@ const SellModal = () => {
                   </label>
                   <input
                     type="text"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                    value={sellFormData.itemName || ""}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
+                    value={donateFormData.itemName || ""}
                     onChange={(e) =>
-                      updateSellFormData({ itemName: e.target.value })
+                      updateDonateFormData({ itemName: e.target.value })
                     }
-                    placeholder="e.g. Professional DSLR Camera Kit"
+                    placeholder="e.g. Winter Jacket"
                   />
                 </div>
 
@@ -311,41 +337,14 @@ const SellModal = () => {
                     Description
                   </label>
                   <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none"
                     rows={3}
-                    value={sellFormData.description || ""}
+                    value={donateFormData.description || ""}
                     onChange={(e) =>
-                      updateSellFormData({ description: e.target.value })
+                      updateDonateFormData({ description: e.target.value })
                     }
-                    placeholder="Describe your item, include details about condition, specifications, etc."></textarea>
-                </div>
-              </div>
-            )}
-
-            {step === 3 && (
-              <div className="space-y-4">
-                <h4 className="font-medium text-gray-700">Pricing & Images</h4>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Rental price (₹ per week)
-                  </label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-2 text-gray-500">
-                      ₹
-                    </span>
-                    <input
-                      type="number"
-                      className="w-full pl-6 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                      value={sellFormData.price || ""}
-                      onChange={(e) =>
-                        updateSellFormData({
-                          price: e.target.value ? parseInt(e.target.value) : "",
-                        })
-                      }
-                      placeholder="e.g. 499"
-                    />
-                  </div>
+                    placeholder="Describe your item, include details about condition, size, etc."
+                  ></textarea>
                 </div>
 
                 <div>
@@ -366,13 +365,15 @@ const SellModal = () => {
                           <button
                             type="button"
                             onClick={capturePhoto}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md">
+                            className="px-4 py-2 bg-green-600 text-white rounded-md"
+                          >
                             Capture Photo
                           </button>
                           <button
                             type="button"
                             onClick={stopCamera}
-                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
+                          >
                             Cancel
                           </button>
                         </div>
@@ -383,13 +384,14 @@ const SellModal = () => {
                       <div className="relative">
                         <img
                           src={uploadedUrl}
-                          alt="Product"
+                          alt="Donation item"
                           className="w-full h-64 object-contain rounded-md"
                         />
                         <button
                           type="button"
                           onClick={removeImage}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
                           <X size={16} />
                         </button>
                       </div>
@@ -404,7 +406,8 @@ const SellModal = () => {
                           <button
                             type="button"
                             onClick={handleCameraCapture}
-                            className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
+                            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md text-sm"
+                          >
                             <Camera size={16} className="mr-2" />
                             Take photo
                           </button>
@@ -416,7 +419,7 @@ const SellModal = () => {
                           />
                         </div>
                         <p className="text-sm text-gray-500">
-                          Upload a single image of your item
+                          Upload a single image of your donation item
                         </p>
                       </div>
                     </div>
@@ -439,20 +442,6 @@ const SellModal = () => {
                     className="hidden"
                   />
                 </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Return policy
-                  </label>
-                  <textarea
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
-                    rows={2}
-                    value={sellFormData.returnPolicy || ""}
-                    onChange={(e) =>
-                      updateSellFormData({ returnPolicy: e.target.value })
-                    }
-                    placeholder="Describe your return policy, conditions, etc."></textarea>
-                </div>
               </div>
             )}
           </div>
@@ -462,30 +451,34 @@ const SellModal = () => {
               <button
                 type="button"
                 onClick={handleBack}
-                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100">
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
                 Back
               </button>
             ) : (
               <button
                 type="button"
-                onClick={closeSellModal}
-                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100">
+                onClick={closeDonateModal}
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
                 Cancel
               </button>
             )}
 
-            {step <= 3 ? (
+            {step < 3 ? (
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              >
                 Next
               </button>
             ) : (
               <button
                 type="submit"
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-                List item
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+              >
+                Donate Item
               </button>
             )}
           </div>
@@ -495,23 +488,4 @@ const SellModal = () => {
   );
 };
 
-// Check component definition
-function Check(props) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={props.size || 24}
-      height={props.size || 24}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={props.className}>
-      <polyline points="20 6 9 17 4 12"></polyline>
-    </svg>
-  );
-}
-
-export default SellModal;
+export default DonateModal;
