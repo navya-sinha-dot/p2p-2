@@ -146,17 +146,6 @@ const SellModal = () => {
       setImage(reader.result);
     };
     reader.readAsDataURL(file);
-
-    if (!image) return alert("No image selected");
-
-    try {
-      const res = await axios.post(`http://localhost:3001/upload`, {
-        image: image,
-      });
-      setUploadedUrl(res.data.url);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-    }
   };
 
   // Handle file upload
@@ -178,8 +167,7 @@ const SellModal = () => {
     //     hasImages: true,
     //   });
 
-    if (!image) return;
-    alert("Image is getting uploaded,please wait");
+    if (!image) return alert("No image selected");
 
     try {
       const res = await axios.post(`http://localhost:3001/upload`, {
@@ -208,6 +196,9 @@ const SellModal = () => {
 
   // Remove the current image
   const removeImage = () => {
+    if (!image) return;
+    setUploadedUrl(null);
+
     if (image && image.url) {
       URL.revokeObjectURL(image.url); // Clean up the object URL
     }
@@ -225,7 +216,8 @@ const SellModal = () => {
           <h3 className="text-lg font-medium">List an item for rent</h3>
           <button
             onClick={closeSellModal}
-            className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1">
+            className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-1"
+          >
             <X size={20} />
           </button>
         </div>
@@ -270,7 +262,8 @@ const SellModal = () => {
                       }`}
                       onClick={() =>
                         updateSellFormData({ category: category.id })
-                      }>
+                      }
+                    >
                       {category.name}
                     </button>
                   ))}
@@ -279,7 +272,8 @@ const SellModal = () => {
                 <div className="mt-3">
                   <button
                     type="button"
-                    className="text-sm text-purple-600 hover:text-purple-800 flex items-center">
+                    className="text-sm text-purple-600 hover:text-purple-800 flex items-center"
+                  >
                     <Plus size={16} className="mr-1" />
                     Request to add a new category
                   </button>
@@ -317,7 +311,8 @@ const SellModal = () => {
                     onChange={(e) =>
                       updateSellFormData({ description: e.target.value })
                     }
-                    placeholder="Describe your item, include details about condition, specifications, etc."></textarea>
+                    placeholder="Describe your item, include details about condition, specifications, etc."
+                  ></textarea>
                 </div>
               </div>
             )}
@@ -366,13 +361,15 @@ const SellModal = () => {
                           <button
                             type="button"
                             onClick={capturePhoto}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md">
+                            className="px-4 py-2 bg-green-600 text-white rounded-md"
+                          >
                             Capture Photo
                           </button>
                           <button
                             type="button"
                             onClick={stopCamera}
-                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
+                            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
+                          >
                             Cancel
                           </button>
                         </div>
@@ -389,7 +386,8 @@ const SellModal = () => {
                         <button
                           type="button"
                           onClick={removeImage}
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600">
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                        >
                           <X size={16} />
                         </button>
                       </div>
@@ -404,7 +402,8 @@ const SellModal = () => {
                           <button
                             type="button"
                             onClick={handleCameraCapture}
-                            className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm">
+                            className="flex items-center px-4 py-2 bg-purple-600 text-white rounded-md text-sm"
+                          >
                             <Camera size={16} className="mr-2" />
                             Take photo
                           </button>
@@ -414,6 +413,13 @@ const SellModal = () => {
                             onChange={handleFileChange}
                             className="flex items-center px-2 py-2 bg-gray-200 text-gray-700 rounded-md text-sm w-22"
                           />
+                          <button
+                            type="button"
+                            onClick={handleFileUpload}
+                            className="px-2 py-2 bg-purple-600 text-white rounded-md text-sm"
+                          >
+                            Upload
+                          </button>
                         </div>
                         <p className="text-sm text-gray-500">
                           Upload a single image of your item
@@ -451,7 +457,8 @@ const SellModal = () => {
                     onChange={(e) =>
                       updateSellFormData({ returnPolicy: e.target.value })
                     }
-                    placeholder="Describe your return policy, conditions, etc."></textarea>
+                    placeholder="Describe your return policy, conditions, etc."
+                  ></textarea>
                 </div>
               </div>
             )}
@@ -462,14 +469,16 @@ const SellModal = () => {
               <button
                 type="button"
                 onClick={handleBack}
-                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100">
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
                 Back
               </button>
             ) : (
               <button
                 type="button"
                 onClick={closeSellModal}
-                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100">
+                className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+              >
                 Cancel
               </button>
             )}
@@ -478,13 +487,15 @@ const SellModal = () => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
                 Next
               </button>
             ) : (
               <button
                 type="submit"
-                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
                 List item
               </button>
             )}
@@ -508,7 +519,8 @@ function Check(props) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={props.className}>
+      className={props.className}
+    >
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
   );
