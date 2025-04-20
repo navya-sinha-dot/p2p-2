@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -12,6 +12,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Layout from "../components/layout/Layout";
+import { useProducts } from "../hooks/useProducts";
 
 const bookSubcategories = [
   "Reference Books (11-12th Std)",
@@ -68,6 +69,22 @@ const BooksCategoryPage = () => {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentFilter, setCurrentFilter] = useState(null);
+  const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const { products, loading } = useProducts();
+
+  useEffect(() => {
+    if (loading && !products) return;
+    let bookks = products?.filter((book) => book.category === "books");
+    setBooks(bookks);
+    setFilteredBooks(bookks);
+    console.log(products);
+
+    return () => {
+      setBooks([]);
+      setFilteredBooks([]);
+    };
+  }, [products, loading]);
 
   const closeAllFilters = () => {
     setShowRentalFilter(false);
@@ -115,6 +132,73 @@ const BooksCategoryPage = () => {
     } else {
       setSelectedSubcategories([...selectedSubcategories, subcategory]);
     }
+  };
+
+  const handleLocationToggle = (location) => {
+    if (selectedLocations.includes(location)) {
+      setSelectedLocations(
+        selectedLocations.filter((item) => item !== location)
+      );
+    } else {
+      setSelectedLocations([...selectedLocations, location]);
+    }
+  };
+
+  const handleSortOptionSelect = (option) => {
+    setSelectedSortOption(option);
+    closeAllFilters();
+  };
+
+  const handleRentalSelect = (option) => {
+    setRentalDuration(option);
+    closeAllFilters();
+  };
+
+  const applyFilters = () => {
+    let filtered = [...books];
+
+    // Filter by subcategory
+    if (selectedSubcategories.length > 0) {
+      filtered = filtered.filter((book) =>
+        selectedSubcategories.includes(book.subcategory)
+      );
+    }
+
+    // Filter by location
+    if (selectedLocations.length > 0) {
+      filtered = filtered.filter((book) =>
+        selectedLocations.includes(book.location)
+      );
+    }
+
+    // Filter by price range
+    filtered = filtered.filter(
+      (book) => book.price >= priceRange[0] && book.price <= priceRange[1]
+    );
+
+    // Apply sorting
+    switch (selectedSortOption) {
+      case "Price: Low to High":
+        filtered.sort((a, b) => a.price - b.price);
+        break;
+      case "Price: High to Low":
+        filtered.sort((a, b) => b.price - a.price);
+        break;
+      case "Highest Rated":
+        filtered.sort((a, b) => b.rating - a.rating);
+        break;
+      case "Most Popular":
+        filtered.sort((a, b) => b.reviews - a.reviews);
+        break;
+      case "Newest First":
+        // Assuming newer items are at the beginning of the array
+        break;
+      default:
+        break;
+    }
+
+    setFilteredBooks(filtered);
+    closeAllFilters();
   };
 
   const FilterButton = ({ label, isActive, onClick, icon }) => (
@@ -177,7 +261,9 @@ const BooksCategoryPage = () => {
           <span className="text-lg font-semibold text-purple-600">
             ₹{book.price}
           </span>
-          <span className="text-gray-500 text-xs ml-1">per week</span>
+          <span className="text-gray-500 text-xs ml-1">
+            per {rentalDuration.toLowerCase()}
+          </span>
         </div>
         <div className="flex items-center justify-between mb-3">
           <p className="text-gray-500 text-xs flex items-center">
@@ -255,15 +341,272 @@ const BooksCategoryPage = () => {
               onClick={() => toggleFilter("sortby")}
               icon={<SlidersHorizontal size={14} className="mr-1" />}
             />
-            {/* Filters dropdowns can be included here as needed */}
+
+            {/* Filter modal container */}
+            {(showRentalFilter ||
+              showSubcategoryFilter ||
+              showLocationFilter ||
+              showSortByFilter) && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white shadow-lg rounded-lg z-30 p-4 border border-gray-200">
+                {/* Rental Filter */}
+                {showRentalFilter && (
+                  <div>
+                    <h3 className="font-medium text-gray-700 mb-3">
+                      Select Rental Duration
+                    </h3>
+                    <div className="space-y-2 mb-4">
+                      {rentalOptions.map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => handleRentalSelect(option)}
+                          className={`w-full text-left px-3 py-2 rounded flex items-center justify-between ${
+                            rentalDuration === option
+                              ? "bg-purple-100 text-purple-700"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
+                          {option}
+                          {rentalDuration === option && (
+                            <Check size={16} className="text-purple-600" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="mt-4">
+                      <h3 className="font-medium text-gray-700 mb-2">
+                        Price Range
+                      </h3>
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="number"
+                          value={priceRange[0]}
+                          onChange={(e) => handlePriceRangeChange(e, 0)}
+                          className="w-20 p-2 border border-gray-300 rounded text-sm"
+                          min="0"
+                          max={priceRange[1]}
+                        />
+                        <span className="text-gray-500">to</span>
+                        <input
+                          type="number"
+                          value={priceRange[1]}
+                          onChange={(e) => handlePriceRangeChange(e, 1)}
+                          className="w-20 p-2 border border-gray-300 rounded text-sm"
+                          min={priceRange[0]}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={applyFilters}
+                        className="bg-purple-600 text-white px-4 py-2 rounded text-sm font-medium"
+                      >
+                        Apply Filter
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Subcategory Filter */}
+                {showSubcategoryFilter && (
+                  <div>
+                    <h3 className="font-medium text-gray-700 mb-3">
+                      Book Categories
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                      {bookSubcategories.map((subcategory) => (
+                        <div key={subcategory} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={`subcategory-${subcategory}`}
+                            className="mr-2 h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                            checked={selectedSubcategories.includes(
+                              subcategory
+                            )}
+                            onChange={() =>
+                              handleSubcategoryToggle(subcategory)
+                            }
+                          />
+                          <label
+                            htmlFor={`subcategory-${subcategory}`}
+                            className="text-sm text-gray-700"
+                          >
+                            {subcategory}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={applyFilters}
+                        className="bg-purple-600 text-white px-4 py-2 rounded text-sm font-medium"
+                      >
+                        Apply Filters
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Location Filter */}
+                {showLocationFilter && (
+                  <div>
+                    <h3 className="font-medium text-gray-700 mb-3">
+                      Select Locations
+                    </h3>
+                    <div className="grid grid-cols-2 gap-2">
+                      {locations.map((location) => (
+                        <div key={location} className="flex items-center">
+                          <input
+                            type="checkbox"
+                            id={`location-${location}`}
+                            className="mr-2 h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
+                            checked={selectedLocations.includes(location)}
+                            onChange={() => handleLocationToggle(location)}
+                          />
+                          <label
+                            htmlFor={`location-${location}`}
+                            className="text-sm text-gray-700"
+                          >
+                            {location}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={applyFilters}
+                        className="bg-purple-600 text-white px-4 py-2 rounded text-sm font-medium"
+                      >
+                        Apply Filters
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Sort By Filter */}
+                {showSortByFilter && (
+                  <div>
+                    <h3 className="font-medium text-gray-700 mb-3">
+                      Sort Results By
+                    </h3>
+                    <div className="space-y-2">
+                      {sortOptions.map((option) => (
+                        <button
+                          key={option}
+                          onClick={() => handleSortOptionSelect(option)}
+                          className={`w-full text-left px-3 py-2 rounded flex items-center justify-between ${
+                            selectedSortOption === option
+                              ? "bg-purple-100 text-purple-700"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
+                          {option}
+                          {selectedSortOption === option && (
+                            <Check size={16} className="text-purple-600" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex justify-end">
+                      <button
+                        onClick={applyFilters}
+                        className="bg-purple-600 text-white px-4 py-2 rounded text-sm font-medium"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Active Filters Display */}
+        {(selectedSubcategories.length > 0 ||
+          selectedLocations.length > 0 ||
+          selectedSortOption ||
+          priceRange[0] > 0 ||
+          priceRange[1] < 200) && (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {selectedSubcategories.map((cat) => (
+              <div
+                key={cat}
+                className="bg-purple-100 text-purple-700 text-xs py-1 px-2 rounded-full flex items-center"
+              >
+                {cat}
+                <button
+                  onClick={() => handleSubcategoryToggle(cat)}
+                  className="ml-1 text-purple-500 hover:text-purple-700"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ))}
+            {selectedLocations.map((loc) => (
+              <div
+                key={loc}
+                className="bg-purple-100 text-purple-700 text-xs py-1 px-2 rounded-full flex items-center"
+              >
+                {loc}
+                <button
+                  onClick={() => handleLocationToggle(loc)}
+                  className="ml-1 text-purple-500 hover:text-purple-700"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+            {(priceRange[0] > 0 || priceRange[1] < 200) && (
+              <div className="bg-purple-100 text-purple-700 text-xs py-1 px-2 rounded-full flex items-center">
+                ₹{priceRange[0]} - ₹{priceRange[1]}
+              </div>
+            )}
+            {selectedSortOption && (
+              <div className="bg-purple-100 text-purple-700 text-xs py-1 px-2 rounded-full flex items-center">
+                {selectedSortOption}
+              </div>
+            )}
+            <button
+              onClick={() => {
+                setSelectedSubcategories([]);
+                setSelectedLocations([]);
+                setPriceRange([0, 200]);
+                setSelectedSortOption("Newest First");
+                setFilteredBooks(books);
+              }}
+              className="text-xs text-gray-600 hover:text-gray-800 underline"
+            >
+              Clear all filters
+            </button>
+          </div>
+        )}
 
         {/* Books Grid */}
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {booksData.map((book) => (
             <BookCard key={book.id} book={book} />
           ))}
+          {filteredBooks.length === 0 && (
+            <div className="col-span-full text-center py-12">
+              <p className="text-gray-500">
+                No books found matching your filters.
+              </p>
+              <button
+                onClick={() => {
+                  setSelectedSubcategories([]);
+                  setSelectedLocations([]);
+                  setPriceRange([0, 200]);
+                  setSelectedSortOption("Newest First");
+                  setFilteredBooks(books);
+                }}
+                className="mt-2 text-purple-600 hover:text-purple-800"
+              >
+                Clear filters
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

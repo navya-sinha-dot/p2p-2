@@ -23,7 +23,7 @@ const itemVariants = {
 
 const FeaturedProducts = () => {
   const navigate = useNavigate();
-  const products = useProducts();
+  const { products } = useProducts();
   const { user } = useAuth();
 
   const handleRent = (product) => {
@@ -74,7 +74,7 @@ const FeaturedProducts = () => {
         initial="hidden"
         animate="visible"
       >
-        {products.map((product) => (
+        {products?.map((product) => (
           <motion.div key={product.id} variants={itemVariants}>
             <ProductCard
               id={product.id}

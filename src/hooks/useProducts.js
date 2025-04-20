@@ -1,17 +1,26 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 export function useProducts() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/products")
-      .then((res) => {
-        setProducts(res.data);
+    setLoading(true);
+    fetch("http://localhost:3001/products", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setProducts(data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
-  return products;
+
+  return { loading, products };
 }
