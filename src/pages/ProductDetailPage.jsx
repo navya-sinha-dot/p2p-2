@@ -42,7 +42,7 @@ const getBookById = (id) => {
       ownerRating: 4.9,
       description:
         "Timeless lessons on wealth, greed, and happiness. The Psychology of Money explores how money moves around in an economy and how people's behavior impacts everything. Doing well with money isn't necessarily about what you know. It's about how you behave. And behavior is hard to teach, even to really smart people.",
-      additionalImages: ["/OIP (1)_1.jpg", "/OIP (1)_2.jpg", "/OIP (1)_3.jpg"],
+      
     },
     {
       id: "b2",
@@ -61,7 +61,7 @@ const getBookById = (id) => {
       ownerRating: 4.7,
       description:
         "The ultimate reference guide for 12th standard Computer Science students. Covers all topics in the curriculum with detailed explanations, diagrams, and practice problems. Includes sections on programming in C++, data structures, database management systems, and computer networks.",
-      additionalImages: ["/OIP (2)_1.jpg", "/OIP (2)_2.jpg"],
+    
     },
     {
       id: "b3",
@@ -273,14 +273,6 @@ const ProductDetailPage = () => {
                 </div>
               </div>
 
-              <div className="flex items-center mb-4">
-                <Star size={16} className="text-amber-500 mr-1" />
-                <span className="font-medium mr-1">{book.rating}</span>
-                <span className="text-gray-500 text-sm">
-                  ({book.reviews} reviews)
-                </span>
-              </div>
-
               <div className="text-2xl font-bold text-purple-600 mb-4">
                 ₹{book.price}{" "}
                 <span className="text-sm font-normal text-gray-500">
@@ -399,7 +391,7 @@ const ProductDetailPage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+              className="fixed inset-0 bg-black/30 backdrop-blur flex items-center justify-center z-50 p-4"
             >
               <motion.div
                 initial={{ scale: 0.9, opacity: 0 }}
