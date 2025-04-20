@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -9,6 +9,7 @@ import {
   User,
   Plus,
   Leaf,
+  DollarSign,
 } from "lucide-react";
 import { useUI } from "../../context/UIContext";
 import Logo from "../common/Logo";
@@ -31,26 +32,26 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50 p-6 shadow-sm"
+      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50 p-3 shadow-sm"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}>
-      <div className="max-w-10xl mx-auto flex items-center">
-        <div className="flex items-center space-x-4 mr-20">
-          <Link to="/home" className="flex items-center mr-20">
+      <div className="max-w-10xl mx-auto flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Link to="/home" className="flex items-center mr-25">
             <Logo />
           </Link>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             <motion.button
               onClick={openSellModal}
-              className="bg-purple-700 hover:bg-purple-800 text-white px-5 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
+              className="bg-purple-700 hover:bg-purple-800 text-white px-4 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200 text-sm"
               whileHover={{
                 scale: 1.03,
                 boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)",
               }}
               whileTap={{ scale: 0.97 }}>
-              <Plus size={18} className="mr-1 mx-auto" />
+              <Plus size={16} className="mr-1" />
               <span>SELL</span>
             </motion.button>
 
@@ -64,48 +65,50 @@ const Navbar = () => {
                 boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)",
               }}
               whileTap={{ scale: 0.97 }}>
-              <Plus size={18} className="mr-1 mx-auto" />
+              <Plus size={16} className="mr-1" />
               <span>DONATE</span>
             </motion.button>
           </div>
         </div>
 
-        <div className="flex-1 max-w-xl mx-6 mr-30">
+        <div className="flex-1 max-w-xl mx-4">
           <div className="relative group">
             <input
               type="text"
               placeholder="What are you searching for?"
-              className="w-full py-2.5 px-5 pr-12 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent shadow-sm transition-all duration-200 bg-white"
+              className="w-full py-2 px-4 pr-10 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent shadow-sm transition-all duration-200 bg-white text-sm"
             />
             <motion.button
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-purple-100 p-1.5 rounded-full text-purple-700 hover:bg-purple-200 transition-colors duration-200"
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 bg-purple-100 p-1 rounded-full text-purple-700 hover:bg-purple-200 transition-colors duration-200"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}>
-              <Search size={18} />
+              <Search size={16} />
             </motion.button>
           </div>
         </div>
 
-        <div className="flex items-center space-x-1 md:space-x-2">
-          <motion.div
-            className="relative"
-            variants={iconVariants}
-            whileHover="hover"
-            whileTap="tap"></motion.div>
+        <div className="flex items-center space-x-1">
+          <motion.div variants={iconVariants} whileHover="hover" whileTap="tap">
+            <Link
+              to="/premium-ads"
+              className="p-1.5 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center">
+              <DollarSign size={20} />
+            </Link>
+          </motion.div>
 
           <motion.div variants={iconVariants} whileHover="hover" whileTap="tap">
             <Link
               to="/chat"
-              className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
-              <MessageCircle size={22} />
+              className="p-1.5 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center">
+              <MessageCircle size={20} />
             </Link>
           </motion.div>
 
           <motion.div variants={iconVariants} whileHover="hover" whileTap="tap">
             <Link
               to="/wishlist"
-              className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
-              <Heart size={22} />
+              className="p-1.5 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center">
+              <Heart size={20} />
             </Link>
           </motion.div>
 
@@ -118,8 +121,8 @@ const Navbar = () => {
           <motion.div variants={iconVariants} whileHover="hover" whileTap="tap">
             <Link
               to="/calendar"
-              className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
-              <Calendar size={22} />
+              className="p-1.5 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center">
+              <Calendar size={20} />
             </Link>
           </motion.div>
 
@@ -130,10 +133,10 @@ const Navbar = () => {
             <Link
               to="/profile"
               className="flex items-center bg-purple-200 hover:bg-purple-300 p-1 pr-3 rounded-full transition-colors duration-200">
-              <div className="w-8 h-8 rounded-full bg-purple-700 text-white flex items-center justify-center mr-2 border-2 border-white">
-                <User size={16} />
+              <div className="w-7 h-7 rounded-full bg-purple-700 text-white flex items-center justify-center mr-1.5 border-2 border-white">
+                <User size={14} />
               </div>
-              <span className="text-sm font-medium text-purple-900 hidden md:block">
+              <span className="text-xs font-medium text-purple-900 hidden md:block">
                 Profile
               </span>
             </Link>
