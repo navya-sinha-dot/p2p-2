@@ -172,7 +172,7 @@ const Chat = () => {
     const handleResize = () => {
       const isMobile = window.innerWidth < 768;
       setIsMobileView(isMobile);
-      
+
       // On larger screens, always show chat list
       if (!isMobile) {
         setShowChatList(true);
@@ -186,15 +186,15 @@ const Chat = () => {
 
   // Toggle sidebar visibility for mobile
   const toggleSidebar = () => {
-    setShowChatList(prev => !prev);
+    setShowChatList((prev) => !prev);
   };
 
   return (
     <Layout showSidebar={false}>
-      <div className="h-[calc(100vh-64px)] flex overflow-hidden bg-gray-50 w-full relative">
+      <div className="h-[calc(100vh-125px)] flex overflow-hidden bg-gray-50 w-full relative">
         {/* Mobile Toggle Button - Only visible on mobile */}
         {isMobileView && !showChatList && (
-          <button 
+          <button
             onClick={toggleSidebar}
             className="absolute top-4 left-4 z-20 bg-purple-600 text-white p-2 rounded-full shadow-lg"
           >
@@ -206,7 +206,9 @@ const Chat = () => {
         <AnimatePresence>
           {(showChatList || !isMobileView) && (
             <motion.div
-              className={`${isMobileView ? 'absolute left-0 top-0 z-10 h-full' : 'relative'} w-full md:w-80 lg:w-96 border-r border-gray-200 bg-white overflow-hidden flex flex-col`}
+              className={`${
+                isMobileView ? "absolute left-0 top-0 z-10 h-full" : "relative"
+              } w-full md:w-80 lg:w-96 border-r border-gray-200 bg-white overflow-hidden flex flex-col`}
               initial={{ opacity: 0, x: isMobileView ? -280 : -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -280 }}
@@ -215,9 +217,11 @@ const Chat = () => {
               {/* Header with close button for mobile */}
               {isMobileView && (
                 <div className="flex justify-between items-center p-3 border-b border-gray-200">
-                  <h2 className="font-bold text-lg text-purple-800">Chat Rooms</h2>
-                  <button 
-                    onClick={toggleSidebar} 
+                  <h2 className="font-bold text-lg text-purple-800">
+                    Chat Rooms
+                  </h2>
+                  <button
+                    onClick={toggleSidebar}
                     className="text-gray-500 hover:text-purple-600"
                   >
                     <ChevronLeft size={24} />
@@ -349,7 +353,7 @@ const Chat = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Create New Group Room - Input and buttons for chat sidebar */}
               <div className="p-3 border-t border-gray-200">
                 <div className="mb-2">
@@ -395,7 +399,11 @@ const Chat = () => {
         </AnimatePresence>
 
         {/* Chat Window - Always shown but adapts to full width on mobile */}
-        <div className={`flex-1 bg-white flex flex-col ${isMobileView && showChatList ? 'hidden' : 'flex'}`}>
+        <div
+          className={`flex-1 bg-white flex flex-col ${
+            isMobileView && showChatList ? "hidden" : "flex"
+          }`}
+        >
           <div className="flex items-center justify-between mb-2 border-b border-gray-200 p-4">
             <div className="flex items-center gap-3">
               {isMobileView && !showChatList && (
@@ -412,8 +420,12 @@ const Chat = () => {
               <h2 className="text-xl font-bold text-purple-800">Chat Room</h2>
             </div>
           </div>
-          
-          <div className="flex-1 overflow-y-auto p-3 md:p-6" ref={messagesEndRef} style={{ minHeight: "300px" }}>
+
+          <div
+            className="flex-1 overflow-y-auto p-3 md:p-6"
+            ref={messagesEndRef}
+            style={{ minHeight: "300px" }}
+          >
             {messages.length > 0 ? (
               messages.map((message, index) => (
                 <motion.p
@@ -433,7 +445,7 @@ const Chat = () => {
               </div>
             )}
           </div>
-          
+
           <div className="flex p-3 gap-2 border-t border-gray-200">
             <input
               ref={msgRef}
