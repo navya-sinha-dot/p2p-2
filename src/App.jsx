@@ -14,6 +14,7 @@ import ProfilePage from "./pages/Profile";
 import BooksPage from "./pages/BooksCategoryPage";
 import PremiumAdsPage from "./pages/PremiumAdsPage";
 import CartPage from "./pages/CartPage";
+import Footer from "./components/common/Footer";
 
 // Context providers
 import { AuthProvider } from "./context/AuthContext";
@@ -25,32 +26,35 @@ import Failure from "./pages/Failure";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <CartProvider>
-          <UIProvider>
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/books" element={<BooksPage />} />
-                <Route path="/success" element={<Success />} />
-                <Route path="/failure" element={<Failure />} />
-                <Route path="/premium-ads" element={<PremiumAdsPage />} />
-                <Route path="/cart" element={<CartPage />} />
-              </Routes>
-            </AnimatePresence>
-          </UIProvider>
-        </CartProvider>
-      </AuthProvider>
-    </Router>
+    <div>
+      <Router>
+        <AuthProvider>
+          <CartProvider>
+            <UIProvider>
+              <AnimatePresence mode="wait">
+                <Routes>
+                  <Route path="/" element={<Landing />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/wishlist" element={<Wishlist />} />
+                  <Route path="/calendar" element={<Calendar />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/books" element={<BooksPage />} />
+                  <Route path="/success" element={<Success />} />
+                  <Route path="/failure" element={<Failure />} />
+                  <Route path="/premium-ads" element={<PremiumAdsPage />} />
+                  <Route path="/cart" element={<CartPage />} />
+                </Routes>
+              </AnimatePresence>
+            </UIProvider>
+          </CartProvider>
+        </AuthProvider>
+      </Router>
+      <Footer />
+    </div>
   );
 }
 
