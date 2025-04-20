@@ -17,7 +17,11 @@ import DonationPopup from "../sell/Donationpopup";
 
 const Navbar = () => {
   const { openSellModal, openDonateModal } = useUI();
+  const [showDonationPopup, setShowDonationPopup] = useState(false);
 
+  const handleDonateClick = () => {
+    setShowDonationPopup(true);
+  };
   const iconVariants = {
     hover: {
       scale: 1.1,
@@ -55,9 +59,13 @@ const Navbar = () => {
               <span>SELL</span>
             </motion.button>
 
+            {showDonationPopup && (
+              <DonationPopup onClose={() => setShowDonationPopup(false)} />
+            )}
+
             <motion.button
               onClick={() => {
-                <DonationPopup />;
+                handleDonateClick();
               }}
               className="bg-purple-700 hover:bg-purple-800 text-white px-5 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
               whileHover={{

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { X, ChevronLeft, ChevronRight, Heart } from "lucide-react";
 
-export default function DonationPopup() {
-  const [isOpen, setIsOpen] = useState(false);
+export default function DonationPopup({ onClose }) {
+  //const [isOpen, setIsOpen] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [productName, setProductName] = useState("");
@@ -19,7 +19,7 @@ export default function DonationPopup() {
   ];
 
   const handleOpenPopup = () => {
-    setIsOpen(true);
+    //setIsOpen(true);
     setCurrentStep(0);
     setSelectedCategory("");
     setProductName("");
@@ -28,7 +28,7 @@ export default function DonationPopup() {
   };
 
   const handleClosePopup = () => {
-    setIsOpen(false);
+    onClose();
   };
 
   const handleNextStep = () => {
@@ -181,92 +181,84 @@ export default function DonationPopup() {
 
   return (
     <div className="flex flex-col items-center p-6 bg-purple-100 rounded-lg">
-      <button
-        onClick={handleOpenPopup}
-        className="px-6 py-3 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition-colors">
-        Donate
-      </button>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-purple-100 rounded-lg shadow-xl w-full max-w-md">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-purple-200">
+            <div className="flex items-center">
+              <span className="font-bold text-lg">Donation Process</span>
+              {!submitted && (
+                <span className="ml-3 text-gray-500 text-sm">
+                  Step {currentStep + 1} of 3
+                </span>
+              )}
+            </div>
+            <button
+              onClick={handleClosePopup}
+              className="text-gray-500 hover:text-gray-700">
+              <X size={20} />
+            </button>
+          </div>
 
-      {isOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-purple-100 rounded-lg shadow-xl w-full max-w-md">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-purple-200">
-              <div className="flex items-center">
-                <span className="font-bold text-lg">Donation Process</span>
-                {!submitted && (
-                  <span className="ml-3 text-gray-500 text-sm">
-                    Step {currentStep + 1} of 3
+          {/* Step indicator */}
+          {!submitted && (
+            <div className="flex justify-between px-6 pt-4">
+              {[0, 1, 2].map((step) => (
+                <div key={step} className="flex flex-col items-center">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      step <= currentStep
+                        ? "bg-purple-500 text-white"
+                        : "bg-purple-200 text-purple-600"
+                    }`}>
+                    {step + 1}
+                  </div>
+                  <span className="text-xs mt-1">
+                    {step === 0
+                      ? "Why We Donate"
+                      : step === 1
+                      ? "Category"
+                      : "Details"}
                   </span>
-                )}
-              </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Content */}
+          <div className="min-h-64">{renderStepContent()}</div>
+
+          {/* Footer */}
+          {!submitted && (
+            <div className="flex justify-between p-4 border-t border-purple-200">
               <button
-                onClick={handleClosePopup}
-                className="text-gray-500 hover:text-gray-700">
-                <X size={20} />
+                onClick={handlePrevStep}
+                className={`px-4 py-2 flex items-center ${
+                  currentStep === 0
+                    ? "text-gray-400 cursor-not-allowed"
+                    : "text-purple-500 hover:text-purple-700"
+                }`}
+                disabled={currentStep === 0}>
+                <ChevronLeft size={16} className="mr-1" />
+                Back
+              </button>
+              <button
+                onClick={handleNextStep}
+                disabled={isNextDisabled()}
+                className={`px-4 py-2 rounded-md flex items-center ${
+                  isNextDisabled()
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-purple-500 text-white hover:bg-purple-600"
+                }`}>
+                {currentStep === 2 ? "Submit" : "Next"}
+                {currentStep !== 2 && (
+                  <ChevronRight size={16} className="ml-1" />
+                )}
               </button>
             </div>
-
-            {/* Step indicator */}
-            {!submitted && (
-              <div className="flex justify-between px-6 pt-4">
-                {[0, 1, 2].map((step) => (
-                  <div key={step} className="flex flex-col items-center">
-                    <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step <= currentStep
-                          ? "bg-purple-500 text-white"
-                          : "bg-purple-200 text-purple-600"
-                      }`}>
-                      {step + 1}
-                    </div>
-                    <span className="text-xs mt-1">
-                      {step === 0
-                        ? "Why We Donate"
-                        : step === 1
-                        ? "Category"
-                        : "Details"}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Content */}
-            <div className="min-h-64">{renderStepContent()}</div>
-
-            {/* Footer */}
-            {!submitted && (
-              <div className="flex justify-between p-4 border-t border-purple-200">
-                <button
-                  onClick={handlePrevStep}
-                  className={`px-4 py-2 flex items-center ${
-                    currentStep === 0
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-purple-500 hover:text-purple-700"
-                  }`}
-                  disabled={currentStep === 0}>
-                  <ChevronLeft size={16} className="mr-1" />
-                  Back
-                </button>
-                <button
-                  onClick={handleNextStep}
-                  disabled={isNextDisabled()}
-                  className={`px-4 py-2 rounded-md flex items-center ${
-                    isNextDisabled()
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                      : "bg-purple-500 text-white hover:bg-purple-600"
-                  }`}>
-                  {currentStep === 2 ? "Submit" : "Next"}
-                  {currentStep !== 2 && (
-                    <ChevronRight size={16} className="ml-1" />
-                  )}
-                </button>
-              </div>
-            )}
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
