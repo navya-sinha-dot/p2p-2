@@ -5,7 +5,8 @@ import PopularCategories from "../components/home/PopularCategories";
 import FeaturedProducts from "../components/home/FeaturedProducts";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Loader } from "lucide-react";
+import { Loader, LocationEdit } from "lucide-react";
+import LocationDropdown from "../components/Location";
 
 const Home = () => {
   const { user, loading } = useAuth();
@@ -36,7 +37,7 @@ const Home = () => {
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              <div className="md:w-1/2 mb-8 md:mb-0">
+              <div className="md:w-1/2 mb-8 md:mb-0 justify-items-start">
                 <h1 className="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
                   Rent Anything.
                   <br />
@@ -46,16 +47,9 @@ const Home = () => {
                   Find thousands of items for rent near you. Why buy when you
                   can borrow?
                 </p>
-                <div className="flex space-x-4">
-                  <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
-                    Browse Items
-                  </button>
-                  <button
-                    className="border border-purple-600 text-purple-700 hover:bg-purple-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
-                    link="./components/sell/SellModal.jsx"
-                  >
-                    List Your Item
-                  </button>
+                <div className="flex gap-4 items-center">
+                  <LocationDropdown />
+                  <LocationEdit size={35} className="text-purple-600" />
                 </div>
               </div>
 
