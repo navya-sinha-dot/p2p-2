@@ -45,7 +45,7 @@ const Navbar = () => {
           <div className="flex items-center space-x-2">
             <motion.button
               onClick={openSellModal}
-              className="bg-purple-700 hover:bg-purple-800 text-white px-4 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200 text-sm"
+              className="bg-purple-700 hover:bg-purple-800 text-white px-5 py-1 rounded-lg font-medium flex items-center shadow-md transition-all duration-200"
               whileHover={{
                 scale: 1.03,
                 boxShadow: "0 4px 12px rgba(147, 51, 234, 0.3)",
