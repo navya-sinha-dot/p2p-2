@@ -15,12 +15,13 @@ import BooksPage from "./pages/BooksCategoryPage";
 import PremiumAdsPage from "./pages/PremiumAdsPage";
 import CartPage from "./pages/CartPage";
 
-
 // Context providers
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import { UIProvider } from "./context/UIContext";
 import LoginPage from "./pages/LoginPage";
+import Success from "./pages/Success";
+import Failure from "./pages/Failure";
 
 function App() {
   return (
@@ -40,6 +41,8 @@ function App() {
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/books" element={<BooksPage />} />
+                <Route path="/success" element={<Success />} />
+                <Route path="/failure" element={<Failure />} />
                 <Route path="/premium-ads" element={<PremiumAdsPage />} />
                 <Route path="/cart" element={<CartPage />} />
               </Routes>
