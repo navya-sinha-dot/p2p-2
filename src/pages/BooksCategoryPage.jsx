@@ -66,6 +66,8 @@ const BooksCategoryPage = () => {
   const [rentalDuration, setRentalDuration] = useState("1 WEEK");
   const [priceRange, setPriceRange] = useState([0, 200]);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+  const [selectedLocations, setSelectedLocations] = useState([]);
+  const [selectedSortOption, setSelectedSortOption] = useState("Newest First");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [currentFilter, setCurrentFilter] = useState(null);
