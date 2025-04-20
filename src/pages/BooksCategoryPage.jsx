@@ -220,7 +220,7 @@ const BooksCategoryPage = () => {
         </div>
 
         {/* Filters UI */}
-        <div className="sticky top-0 z-20 bg-gray-50 p-3 rounded-lg mb-6 shadow-sm">
+        <div className="sticky top-0 z-20 bg-gradient-to-r from-purple-200 via-purple-100 to-indigo-100 p-3 rounded-lg mb-6 shadow-sm">
           <div className="text-sm font-medium text-gray-500 mb-2 flex items-center">
             <SlidersHorizontal size={16} className="mr-1" /> FILTERS
           </div>
