@@ -64,7 +64,8 @@ export default function DonationPopup({ onClose }) {
           </p>
           <button
             onClick={handleClosePopup}
-            className="mt-6 px-6 py-2 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition-colors">
+            className="mt-6 px-6 py-2 bg-purple-500 text-white rounded-md font-medium hover:bg-purple-600 transition-colors"
+          >
             Close
           </button>
         </div>
@@ -118,7 +119,8 @@ export default function DonationPopup({ onClose }) {
                       ? "bg-purple-200 border-purple-500"
                       : "border-gray-300 hover:bg-purple-50"
                   }`}
-                  onClick={() => setSelectedCategory(category)}>
+                  onClick={() => setSelectedCategory(category)}
+                >
                   {category}
                 </button>
               ))}
@@ -150,7 +152,8 @@ export default function DonationPopup({ onClose }) {
             <div className="mb-4">
               <label
                 htmlFor="productDescription"
-                className="block mb-2 font-medium">
+                className="block mb-2 font-medium"
+              >
                 Product Description
               </label>
               <textarea
@@ -181,7 +184,7 @@ export default function DonationPopup({ onClose }) {
 
   return (
     <div className="flex flex-col items-center p-6 bg-purple-100 rounded-lg">
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
         <div className="bg-purple-100 rounded-lg shadow-xl w-full max-w-md">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-purple-200">
@@ -195,7 +198,8 @@ export default function DonationPopup({ onClose }) {
             </div>
             <button
               onClick={handleClosePopup}
-              className="text-gray-500 hover:text-gray-700">
+              className="text-gray-500 hover:text-gray-700"
+            >
               <X size={20} />
             </button>
           </div>
@@ -210,7 +214,8 @@ export default function DonationPopup({ onClose }) {
                       step <= currentStep
                         ? "bg-purple-500 text-white"
                         : "bg-purple-200 text-purple-600"
-                    }`}>
+                    }`}
+                  >
                     {step + 1}
                   </div>
                   <span className="text-xs mt-1">
@@ -238,7 +243,8 @@ export default function DonationPopup({ onClose }) {
                     ? "text-gray-400 cursor-not-allowed"
                     : "text-purple-500 hover:text-purple-700"
                 }`}
-                disabled={currentStep === 0}>
+                disabled={currentStep === 0}
+              >
                 <ChevronLeft size={16} className="mr-1" />
                 Back
               </button>
@@ -249,7 +255,8 @@ export default function DonationPopup({ onClose }) {
                   isNextDisabled()
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                     : "bg-purple-500 text-white hover:bg-purple-600"
-                }`}>
+                }`}
+              >
                 {currentStep === 2 ? "Submit" : "Next"}
                 {currentStep !== 2 && (
                   <ChevronRight size={16} className="ml-1" />

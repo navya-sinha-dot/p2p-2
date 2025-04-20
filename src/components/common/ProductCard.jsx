@@ -29,10 +29,7 @@ const ProductCard = ({
       />
 
       {/* Wishlist Button */}
-      <button
-        onClick={() => onAddToWishlist(id)}
-        className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md hover:bg-purple-100 transition-colors duration-200"
-      >
+      <button className="absolute top-3 right-3 bg-white p-2 rounded-full shadow-md hover:bg-purple-100 transition-colors duration-200">
         {isInWishlist ? (
           <AiFillHeart className="text-red-500 text-xl" />
         ) : (
@@ -46,6 +43,7 @@ const ProductCard = ({
       <div className="mt-4">
         <p className="text-sm text-gray-500">{location}</p>
         <h3 className="text-lg font-semibold">{name}</h3>
+        <h4 className="text-gray-700 mt-1 text-sm">{category}</h4>
         <p className="text-gray-700 mt-1 text-sm">{description}</p>
         <div className="flex justify-between items-center mt-3">
           <span className="text-purple-600 font-bold text-lg">

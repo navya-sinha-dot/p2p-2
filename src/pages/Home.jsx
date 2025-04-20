@@ -25,7 +25,8 @@ const Home = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="bg-purple-50">
+        className="bg-purple-50"
+      >
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-purple-100 to-purple-50 py-10 px-6">
           <div className="max-w-6xl mx-auto">
@@ -33,7 +34,8 @@ const Home = () => {
               className="flex flex-col md:flex-row items-center justify-between"
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}>
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
               <div className="md:w-1/2 mb-8 md:mb-0">
                 <h1 className="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
                   Rent Anything.
@@ -48,7 +50,10 @@ const Home = () => {
                   <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
                     Browse Items
                   </button>
-                  <button className="border border-purple-600 text-purple-700 hover:bg-purple-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200" link='./components/sell/SellModal.jsx'>
+                  <button
+                    className="border border-purple-600 text-purple-700 hover:bg-purple-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                    link="./components/sell/SellModal.jsx"
+                  >
                     List Your Item
                   </button>
                 </div>
@@ -64,7 +69,8 @@ const Home = () => {
                   <motion.div
                     className="absolute -bottom-4 -right-4 bg-purple-100 p-3 rounded-lg shadow-md"
                     animate={{ y: [0, -5, 0] }}
-                    transition={{ repeat: Infinity, duration: 2 }}>
+                    transition={{ repeat: Infinity, duration: 2 }}
+                  >
                     <span className="font-bold text-purple-800">
                       Most Popular
                     </span>
@@ -92,7 +98,8 @@ const Home = () => {
                     className="h-8 w-8 text-purple-600"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -117,7 +124,8 @@ const Home = () => {
                     className="h-8 w-8 text-purple-600"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -142,7 +150,8 @@ const Home = () => {
                     className="h-8 w-8 text-purple-600"
                     fill="none"
                     viewBox="0 0 24 24"
-                    stroke="currentColor">
+                    stroke="currentColor"
+                  >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"

@@ -80,49 +80,88 @@ const ProfilePage = () => {
 
   const { user, logout } = useAuth();
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.5 },
+    },
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.2 } },
+    tap: { scale: 0.95 },
+  };
+
+  const navigate = useNavigate();
+
   return (
     <Layout>
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="min-h-screen bg-purple-50 pb-10 flex space-x-4 mt-2 sm:mt-0">
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="min-h-screen bg-purple-50 pb-12 flex flex-col mt-2 sm:mt-0"
+      >
         {/* Profile Header */}
-        <div className="bg-white shadow-sm">
-          <div className="max-w-6xl mx-auto px-4 py-6">
+        <motion.div
+          variants={itemVariants}
+          className="bg-white shadow-md rounded-lg mx-4 sm:mx-8 lg:mx-auto lg:max-w-6xl overflow-hidden"
+        >
+          <div className="max-w-6xl mx-auto px-6 py-8">
             <div className="flex flex-col md:flex-row gap-8">
               {/* Profile Info */}
               <div className="flex flex-col md:flex-row items-start gap-6">
-                <div className="w-32 h-32 border-2 border-purple-300 rounded-full overflow-hidden">
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  className="w-32 h-32 border-4 border-purple-300 rounded-full overflow-hidden shadow-md"
+                >
                   <img
                     src={user?.avatar}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />
-                </div>
+                </motion.div>
 
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800 mb-2">
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
                     {user?.name}
                   </h1>
 
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <span>USER VERIFIED WITH</span>
-                    <div className="flex items-center gap-2">
-                      <div className="w-15 h-15 rounded-full overflow-hidden">
+                  <div className="flex items-center gap-3 text-sm text-gray-600 bg-purple-50 px-4 py-2 rounded-lg">
+                    <span className="font-medium">USER VERIFIED WITH</span>
+                    <div className="flex items-center gap-3">
+                      <motion.div
+                        whileHover={{ rotate: 5 }}
+                        className="w-16 h-6 overflow-hidden"
+                      >
                         <img
                           src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png"
                           alt="Google"
                           className="w-full h-full object-contain"
                         />
-                      </div>
-                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center">
+                      </motion.div>
+                      <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center shadow-sm">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className="h-4 w-4 text-gray-600"
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke="currentColor">
+                          stroke="currentColor"
+                        >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -134,22 +173,34 @@ const ProfilePage = () => {
                     </div>
                   </div>
 
-                  <div className="mt-4 flex gap-4">
-                    <button className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors">
+                  <div className="mt-6 flex gap-4">
+                    <motion.button
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="px-6 py-2 border-2 border-purple-400 rounded-full text-purple-700 font-medium hover:bg-purple-100 transition-colors shadow-sm"
+                    >
                       EDIT PROFILE
-                    </button>
-                    <button
-                      className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
-                      onClick={() => logout()}>
+                    </motion.button>
+                    <motion.button
+                      variants={buttonVariants}
+                      whileHover="hover"
+                      whileTap="tap"
+                      className="px-6 py-2 border-2 border-gray-300 rounded-full text-gray-700 font-medium hover:bg-gray-100 transition-colors shadow-sm"
+                      onClick={() => logout()}
+                    >
                       LOG OUT
-                    </button>
+                    </motion.button>
                   </div>
                 </div>
               </div>
 
               {/* Activity Charts */}
-              <div className="md:ml-auto w-full md:w-96 bg-white rounded-lg p-4 shadow-sm">
-                <div className="mb-4">
+              <motion.div
+                variants={itemVariants}
+                className="md:ml-auto w-full md:w-96 bg-white rounded-xl p-5 shadow-md border border-purple-100"
+              >
+                <div className="mb-6">
                   <Line
                     data={lineChartData}
                     options={chartOptions}
@@ -163,50 +214,85 @@ const ProfilePage = () => {
                     height={100}
                   />
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* Profile Navigation */}
-        <div className="max-w-6xl mx-auto px-4 mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-2 border border-gray-200 rounded-lg overflow-hidden">
-            <button className="py-3 px-4 bg-gray-100 text-purple-700 font-medium hover:bg-gray-200 transition-colors">
+        <motion.div
+          variants={itemVariants}
+          className="mx-4 sm:mx-8 lg:mx-auto lg:max-w-6xl mt-8"
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 border-2 border-purple-200 rounded-xl overflow-hidden shadow-md">
+            <motion.button
+              whileHover={{ backgroundColor: "#EDE9FE" }}
+              className="py-4 px-4 bg-purple-100 text-purple-700 font-semibold transition-colors"
+            >
               MY LISTINGS
-            </button>
-            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+            </motion.button>
+            <motion.button
+              whileHover={{ backgroundColor: "#EDE9FE" }}
+              className="py-4 px-4 bg-white text-gray-700 font-semibold hover:bg-purple-50 transition-colors"
+            >
               MY RENTALS
-            </button>
-            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+            </motion.button>
+            <motion.button
+              whileHover={{ backgroundColor: "#EDE9FE" }}
+              className="py-4 px-4 bg-white text-gray-700 font-semibold hover:bg-purple-50 transition-colors"
+            >
               BUY BUSINESS PACKAGES
-            </button>
-            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+            </motion.button>
+            <motion.button
+              whileHover={{ backgroundColor: "#EDE9FE" }}
+              className="py-4 px-4 bg-white text-gray-700 font-semibold hover:bg-purple-50 transition-colors"
+            >
               RATINGS AND REVIEWS
-            </button>
-            <button className="py-3 px-4 bg-white text-gray-700 font-medium hover:bg-gray-100 transition-colors">
+            </motion.button>
+            <motion.button
+              whileHover={{ backgroundColor: "#EDE9FE" }}
+              className="py-4 px-4 bg-white text-gray-700 font-semibold hover:bg-purple-50 transition-colors"
+            >
               HELP
-            </button>
+            </motion.button>
           </div>
-        </div>
+        </motion.div>
 
         {/* Empty State */}
-        <div className="max-w-6xl mx-auto px-4 mt-12">
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="w-20 h-20 mb-4">
+        <motion.div
+          variants={itemVariants}
+          className="mx-4 sm:mx-8 lg:mx-auto lg:max-w-6xl mt-10"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+            className="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow-md border border-purple-100"
+          >
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="w-24 h-24 mb-6 bg-purple-100 p-4 rounded-full"
+            >
               <img
                 src="https://thumbs.dreamstime.com/b/confused-man-sitting-desk-computer-shopping-cart-flat-vector-illustration-beard-looks-puzzled-typing-his-365405750.jpg"
                 alt="No listings"
-                className="w-full h-full object-contain rounded-3xl"
+                className="w-full h-full object-contain rounded-full"
               />
-            </div>
-            <p className="text-gray-600 mb-6">
+            </motion.div>
+            <p className="text-gray-600 mb-8 mx-4 font-medium">
               YOU HAVEN'T LISTED ANYTHING YET
             </p>
-            <button className="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => navigate("/home")}
+              className="px-8 py-3 bg-purple-600 text-white font-medium rounded-full hover:bg-purple-700 transition-colors shadow-lg"
+            >
               START SELLING
-            </button>
-          </div>
-        </div>
+            </motion.button>
+          </motion.div>
+        </motion.div>
       </motion.div>
     </Layout>
   );

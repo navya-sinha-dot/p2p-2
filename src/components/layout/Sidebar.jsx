@@ -18,7 +18,7 @@ const Sidebar = ({ selectedCategory, onSelectCategory }) => {
   const navigate = useNavigate();
   return (
     <motion.div
-      className="bg-gradient-to-r from-purple-100 to-purple-200 py-3 px-6 sticky top-0 z-50 backdrop-blur-sm bg-opacity-90"
+      className="bg-gradient-to-r from-purple-100 to-purple-200 py-3 px-6 sticky top-0 z-40 backdrop-blur-sm bg-opacity-90"
       initial={{ x: -50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
