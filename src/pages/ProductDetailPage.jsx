@@ -42,7 +42,6 @@ const getBookById = (id) => {
       ownerRating: 4.9,
       description:
         "Timeless lessons on wealth, greed, and happiness. The Psychology of Money explores how money moves around in an economy and how people's behavior impacts everything. Doing well with money isn't necessarily about what you know. It's about how you behave. And behavior is hard to teach, even to really smart people.",
-      
     },
     {
       id: "b2",
@@ -61,7 +60,6 @@ const getBookById = (id) => {
       ownerRating: 4.7,
       description:
         "The ultimate reference guide for 12th standard Computer Science students. Covers all topics in the curriculum with detailed explanations, diagrams, and practice problems. Includes sections on programming in C++, data structures, database management systems, and computer networks.",
-    
     },
     {
       id: "b3",
