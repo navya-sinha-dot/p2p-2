@@ -111,12 +111,12 @@ const Wishlist = () => {
   const ItemCard = ({ item, isWishlist = false }) => (
     <motion.div
       key={item.id}
-      className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col h-full"
+      className="bg-white rounded-lg shadow-md overflow-hidden flex space-x-4 mt-2 sm:mt-0 flex-col h-full "
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
       whileHover={{ y: -5, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}>
-      <div className="relative">
+      <div className="relative flex space-x-4 mt-2 sm:mt-0">
         <img
           src={item.image}
           alt={item.name}
@@ -190,7 +190,7 @@ const Wishlist = () => {
           {item.location}
         </p>
 
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-4 flex space-x-4 md-2 sm:md-0">
           <motion.button
             onClick={() => navigate(`/product/${item.id}`)}
             className={`w-full py-2 ${
