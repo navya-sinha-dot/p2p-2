@@ -8,12 +8,13 @@ import {
   MessageCircle,
   User,
   Plus,
+  Leaf,
 } from "lucide-react";
 import { useUI } from "../../context/UIContext";
 import Logo from "../common/Logo";
 
 const Navbar = () => {
-  const { openSellModal } = useUI();
+  const { openSellModal, openDonateModal } = useUI();
 
   const iconVariants = {
     hover: {
@@ -29,13 +30,13 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50  p-6  shadow-sm"
+      className="bg-gradient-to-r from-purple-200 via-purple-50 to-indigo-50 p-6 shadow-sm"
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}>
-      <div className="max-w-10xl mx-auto  flex items-center ">
-        <div className="flex items-center space-x-15 mr-20">
-          <Link to="/home" className="flex items-center">
+      <div className="max-w-10xl mx-auto flex items-center">
+        <div className="flex items-center space-x-4 mr-20">
+          <Link to="/home" className="flex items-center mr-20">
             <Logo />
           </Link>
 
@@ -102,6 +103,7 @@ const Navbar = () => {
               to="/wishlist"
               className="p-2 rounded-full text-purple-800 hover:bg-purple-200 transition-colors duration-200 flex items-center mr-10">
               <Heart size={22} />
+            </Link>
             </Link>
           </motion.div>
 

@@ -48,7 +48,7 @@ const Home = () => {
                   <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
                     Browse Items
                   </button>
-                  <button className="border border-purple-600 text-purple-700 hover:bg-purple-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                  <button className="border border-purple-600 text-purple-700 hover:bg-purple-100 px-6 py-3 rounded-lg font-medium transition-colors duration-200" link='./components/sell/SellModal.jsx'>
                     List Your Item
                   </button>
                 </div>
