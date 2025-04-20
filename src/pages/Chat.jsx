@@ -14,6 +14,7 @@ import {
   Video,
   Clock,
   ChevronLeft,
+  Menu,
 } from "lucide-react";
 import Layout from "../components/layout/Layout";
 import { useUI } from "../context/UIContext";
@@ -49,7 +50,7 @@ const Avatar = ({ name, src, size = "md" }) => {
   );
 };
 
-// Add avatar URLs and improve mock data
+// Mock chat data
 const mockChats = [
   {
     id: "chat1",
@@ -83,67 +84,6 @@ const mockChats = [
       },
     ],
   },
-  // {
-  //   id: "chat2",
-  //   name: "Priya Sharma",
-  //   lastMessage: "I'll have the party decorations ready by Friday",
-  //   time: "10:45 AM",
-  //   unread: 0,
-  //   type: "renting",
-  //   profilePic: "https://i.pravatar.cc/150?u=priya",
-  //   messages: [
-  //     {
-  //       id: "m4",
-  //       sender: "You",
-  //       message: "Hi Priya, I'm interested in renting your party decorations",
-  //       time: "9:30 AM",
-  //     },
-  //     {
-  //       id: "m5",
-  //       sender: "Priya",
-  //       message: "Hi there! Sure, when do you need them?",
-  //       time: "9:45 AM",
-  //       avatar: "https://i.pravatar.cc/150?u=priya",
-  //     },
-  //     {
-  //       id: "m6",
-  //       sender: "You",
-  //       message: "For next Saturday, is that possible?",
-  //       time: "10:15 AM",
-  //     },
-  //     {
-  //       id: "m7",
-  //       sender: "Priya",
-  //       message: "I'll have the party decorations ready by Friday",
-  //       time: "10:45 AM",
-  //       avatar: "https://i.pravatar.cc/150?u=priya",
-  //     },
-  //   ],
-  // },
-  // {
-  //   id: "chat3",
-  //   name: "Rahul Verma",
-  //   lastMessage: "Thanks for renting my camera, hope it worked well for you!",
-  //   time: "Yesterday",
-  //   unread: 0,
-  //   type: "selling",
-  //   profilePic: "https://i.pravatar.cc/150?u=rahul",
-  //   messages: [
-  //     {
-  //       id: "m8",
-  //       sender: "Rahul",
-  //       message: "Thanks for renting my camera, hope it worked well for you!",
-  //       time: "Yesterday",
-  //       avatar: "https://i.pravatar.cc/150?u=rahul",
-  //     },
-  //     {
-  //       id: "m9",
-  //       sender: "You",
-  //       message: "It was perfect! I got some great shots.",
-  //       time: "Yesterday",
-  //     },
-  //   ],
-  // },
 ];
 
 const Chat = () => {
@@ -163,10 +103,12 @@ const Chat = () => {
 
   const { openSellModal } = useUI();
 
+  // Auto-scroll to the bottom of messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // WebSocket setup
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3002");
 
@@ -189,8 +131,9 @@ const Chat = () => {
     return () => {
       ws.close();
     };
-  });
+  }, []);
 
+  // Send message handler
   const handleSend = () => {
     const message = msgRef.current?.value;
     if (message) {
@@ -207,125 +150,81 @@ const Chat = () => {
     }
   };
 
+  // Handle Enter key press for sending messages
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
       handleSend();
     }
   };
 
-  const getCurrentTime = () => {
-    return new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
   // Filter chats based on active tab and search query
   const filteredChats = chats.filter((chat) => {
     const matchesTab = activeTab === "all" || chat.type === activeTab;
-
     const matchesSearch =
       !searchQuery ||
       chat.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
-
     return matchesTab && matchesSearch;
   });
 
-  // Handle viewport changes
+  // Handle viewport changes and set mobile view state
   useEffect(() => {
     const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
+      const isMobile = window.innerWidth < 768;
+      setIsMobileView(isMobile);
+      
+      // On larger screens, always show chat list
+      if (!isMobile) {
+        setShowChatList(true);
+      }
     };
 
     handleResize();
     window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Show only chat window on mobile when chat is selected
-  useEffect(() => {
-    if (isMobileView && selectedChat) {
-      setShowChatList(false);
-    } else {
-      setShowChatList(true);
-    }
-  }, [selectedChat, isMobileView]);
-
-  // Scroll to bottom of messages when new messages arrive
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [selectedChat]);
-
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-
-    // Get current time
-    const currentTime = new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
-    // Create new message object
-    const newMessage = {
-      id: `m${Date.now()}`, // Generate unique ID
-      sender: "You",
-      message: message.trim(),
-      time: currentTime,
-    };
-
-    // Update the chats state with the new message
-    setChats((prevChats) =>
-      prevChats.map((chat) => {
-        if (chat.id === selectedChat.id) {
-          // Update this chat's messages and lastMessage
-          return {
-            ...chat,
-            messages: [...chat.messages, newMessage],
-            lastMessage: message.trim(),
-            time: currentTime,
-          };
-        }
-        return chat;
-      })
-    );
-
-    // Update the selected chat state to show the new message
-    setSelectedChat((prev) => ({
-      ...prev,
-      messages: [...prev.messages, newMessage],
-      lastMessage: message.trim(),
-      time: currentTime,
-    }));
-
-    // Clear the input field
-    setMessage("");
-  };
-
-  const handleBackToList = () => {
-    setShowChatList(true);
-  };
-
-  const formatTime = (timeString) => {
-    return timeString; // In a real app, you would format the time properly
+  // Toggle sidebar visibility for mobile
+  const toggleSidebar = () => {
+    setShowChatList(prev => !prev);
   };
 
   return (
     <Layout showSidebar={false}>
-      <div className="h-[calc(100vh-64px)] flex overflow-hidden bg-gray-50">
-        {/* Chat List */}
+      <div className="h-[calc(100vh-64px)] flex overflow-hidden bg-gray-50 w-full relative">
+        {/* Mobile Toggle Button - Only visible on mobile */}
+        {isMobileView && !showChatList && (
+          <button 
+            onClick={toggleSidebar}
+            className="absolute top-4 left-4 z-20 bg-purple-600 text-white p-2 rounded-full shadow-lg"
+          >
+            <Menu size={20} />
+          </button>
+        )}
+
+        {/* Chat List Sidebar - Conditionally shown based on screen size and state */}
         <AnimatePresence>
           {(showChatList || !isMobileView) && (
             <motion.div
-              className="w-full md:w-100 border-r border-gray-200 bg-white overflow-hidden flex flex-col"
+              className={`${isMobileView ? 'absolute left-0 top-0 z-10 h-full' : 'relative'} w-full md:w-80 lg:w-96 border-r border-gray-200 bg-white overflow-hidden flex flex-col`}
               initial={{ opacity: 0, x: isMobileView ? -280 : -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -280 }}
               transition={{ duration: 0.3 }}
             >
+              {/* Header with close button for mobile */}
+              {isMobileView && (
+                <div className="flex justify-between items-center p-3 border-b border-gray-200">
+                  <h2 className="font-bold text-lg text-purple-800">Chat Rooms</h2>
+                  <button 
+                    onClick={toggleSidebar} 
+                    className="text-gray-500 hover:text-purple-600"
+                  >
+                    <ChevronLeft size={24} />
+                  </button>
+                </div>
+              )}
+
               {/* Search bar */}
               <div className="p-3 border-b border-gray-100">
                 <div className="relative">
@@ -344,7 +243,7 @@ const Chat = () => {
               </div>
 
               {/* Tabs */}
-              <div className="border-b border-gray-200 py-2 px-3">
+              <div className="border-b border-gray-200 py-1 md:py-2 px-2 md:px-3">
                 <div className="flex p-1 bg-gray-100 rounded-xl">
                   <button
                     onClick={() => setActiveTab("groups")}
@@ -429,7 +328,7 @@ const Chat = () => {
                           )}
                         </div>
 
-                        {chat.type === "group" && (
+                        {chat.type === "groups" && (
                           <div className="flex items-center mt-1">
                             <Users size={12} className="text-purple-500 mr-1" />
                             <p className="text-xs text-gray-500 truncate">
@@ -450,23 +349,73 @@ const Chat = () => {
                   </div>
                 )}
               </div>
+              
+              {/* Create New Group Room - Input and buttons for chat sidebar */}
+              <div className="p-3 border-t border-gray-200">
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    placeholder="Enter group name"
+                    ref={roomNameRef}
+                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm transition-all duration-200 bg-white"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => {
+                      if (!roomNameRef.current?.value) return;
+                      const chat = {
+                        id: `chat-${Date.now()}`,
+                        name: roomNameRef.current.value,
+                        lastMessage: "Room joined",
+                        time: new Date().toLocaleTimeString([], {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        }),
+                        unread: 0,
+                        type: "groups",
+                        members: [user?.name || "You"],
+                        messages: [],
+                      };
+                      setChats((prev) => [...prev, chat]);
+                      setSelectedChat(chat);
+                      if (isMobileView) setShowChatList(false);
+                    }}
+                    className="flex-1 text-sm bg-purple-600 text-white px-2 py-2 rounded-lg hover:bg-purple-700 flex items-center justify-center gap-1"
+                  >
+                    <Plus size={16} />
+                    New Group
+                  </motion.button>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Chat Window */}
-        <div className="flex-1 bg-white flex-col m-6 items-center justify-center min-h-screen">
-          <div className="flex items-center justify-between mb-6 pl-5 pt-5">
-            <div className="flex items-center gap-6">
+        {/* Chat Window - Always shown but adapts to full width on mobile */}
+        <div className={`flex-1 bg-white flex flex-col ${isMobileView && showChatList ? 'hidden' : 'flex'}`}>
+          <div className="flex items-center justify-between mb-2 border-b border-gray-200 p-4">
+            <div className="flex items-center gap-3">
+              {isMobileView && !showChatList && (
+                <button
+                  onClick={toggleSidebar}
+                  className="text-gray-500 hover:text-purple-600 transition-colors mr-2"
+                >
+                  <Menu size={24} />
+                </button>
+              )}
               <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
                 <MessageCircle size={20} className="text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-purple-800">Chat Room</h2>
+              <h2 className="text-xl font-bold text-purple-800">Chat Room</h2>
             </div>
           </div>
-          <div className="h-[700px] w-full max-w-5xl border-2 border-white rounded-lg bg-white shadow-lg">
-            <div className="h-[600px] overflow-y-auto p-6">
-              {messages.map((message, index) => (
+          
+          <div className="flex-1 overflow-y-auto p-3 md:p-6" ref={messagesEndRef} style={{ minHeight: "300px" }}>
+            {messages.length > 0 ? (
+              messages.map((message, index) => (
                 <motion.p
                   key={index}
                   initial={{ opacity: 0, x: 30 }}
@@ -476,251 +425,32 @@ const Chat = () => {
                 >
                   {message}
                 </motion.p>
-              ))}
-            </div>
-            <div className="flex p-3 gap-2">
-              <input
-                ref={msgRef}
-                type="text"
-                onKeyDown={handleKeyPress}
-                className="w-full h-10 border-2 border-gray-300 rounded-lg px-3"
-              />
-              <button
-                className="w-20 h-10 bg-purple-500 text-white rounded-lg hover:bg-purple-600"
-                onClick={handleSend}
-              >
-                Send
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* <AnimatePresence>
-          <motion.div
-            className={`flex-1 flex flex-col bg-gray-50 ${
-              isMobileView && showChatList ? "hidden" : "block"
-            }`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            {selectedChat ? (
-              <>
-                <div className="bg-white p-4 border-b border-gray-200 flex justify-between items-center shadow-sm">
-                  <div className="flex items-center">
-                    {isMobileView && (
-                      <button
-                        onClick={handleBackToList}
-                        className="mr-2 text-gray-500 hover:text-purple-600 transition-colors"
-                      >
-                        <ChevronLeft size={24} />
-                      </button>
-                    )}
-
-                    <Avatar
-                      name={selectedChat.name}
-                      src={selectedChat.profilePic}
-                      size="md"
-                    />
-
-                    <div className="ml-3">
-                      <h2 className="font-bold text-gray-900">
-                        {selectedChat.name}
-                      </h2>
-                      {selectedChat.type === "group" && (
-                        <p className="text-xs text-gray-500">
-                          {selectedChat.members.join(", ")}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center space-x-4">
-                    <button className="text-gray-500 hover:text-purple-600 transition-colors">
-                      <Phone size={20} />
-                    </button>
-                    <button className="text-gray-500 hover:text-purple-600 transition-colors">
-                      <Video size={20} />
-                    </button>
-
-                    {selectedChat.type === "group" && (
-                      <motion.button
-                        onClick={openSellModal}
-                        className="bg-purple-600 text-white px-4 py-2 rounded-full text-sm flex items-center shadow-md"
-                        whileHover={{ scale: 1.05, backgroundColor: "#DB2777" }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Plus size={16} className="mr-1" />
-                        Sell
-                      </motion.button>
-                    )}
-
-                    <button className="text-gray-500 hover:text-purple-600 transition-colors">
-                      <MoreVertical size={20} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 bg-opacity-60 backdrop-blur-sm">
-                  <div className="text-center mb-4">
-                    <span className="inline-block px-3 py-1 bg-purple-100 text-purple-800 text-xs rounded-full">
-                      {formatTime(selectedChat.messages[0]?.time || "Today")}
-                    </span>
-                  </div>
-
-                  {selectedChat.messages.map((msg) => (
-                    <motion.div
-                      key={msg.id}
-                      className={`max-w-xs ${
-                        msg.sender === "You" ? "ml-auto" : "flex items-end"
-                      }`}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                    >
-                      {msg.sender !== "You" && msg.avatar && (
-                        <Avatar name={msg.sender} src={msg.avatar} size="sm" />
-                      )}
-
-                      <div
-                        className={`rounded-2xl p-3 mt-1 ${
-                          msg.sender === "You"
-                            ? "bg-gradient-to-r from-purple-500 to-purple-600 text-white ml-auto shadow-md"
-                            : "bg-white border border-gray-100 ml-2 shadow-sm"
-                        }`}
-                      >
-                        {msg.sender !== "You" && (
-                          <p className="text-xs font-medium mb-1 text-purple-600">
-                            {msg.sender}
-                          </p>
-                        )}
-                        <p className="break-words">{msg.message}</p>
-                        <p
-                          className={`text-xs mt-1 text-right ${
-                            msg.sender === "You"
-                              ? "text-purple-200"
-                              : "text-gray-400"
-                          }`}
-                        >
-                          {msg.time}
-                        </p>
-                      </div>
-                    </motion.div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-
-                <div className="border-t border-gray-200 bg-white p-3 shadow-lg">
-                  <form
-                    onSubmit={handleSendMessage}
-                    className="flex items-center bg-gray-50 rounded-full px-3 py-1 border border-gray-200"
-                  >
-                    <button
-                      type="button"
-                      className="p-2 text-gray-500 hover:text-purple-500 transition-colors"
-                    >
-                      <Image size={20} />
-                    </button>
-
-                    <input
-                      type="text"
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      placeholder="Type a message..."
-                      className="flex-1 py-2 px-3 bg-transparent border-none focus:outline-none text-gray-700"
-                    />
-
-                    <motion.button
-                      type="submit"
-                      className={`p-2 rounded-full ${
-                        message.trim()
-                          ? "bg-purple-600 text-white shadow-sm"
-                          : "text-gray-400"
-                      }`}
-                      whileHover={message.trim() ? { scale: 1.1 } : {}}
-                      whileTap={message.trim() ? { scale: 0.9 } : {}}
-                      disabled={!message.trim()}
-                    >
-                      <Send size={18} />
-                    </motion.button>
-                  </form>
-                </div>
-              </>
+              ))
             ) : (
-              <div className="flex-1 flex flex-col items-center justify-center p-8">
-                <div className="bg-gray-100 p-6 rounded-full mb-6">
-                  <MessageCircle size={48} className="text-purple-700" />
-                </div>
-                <h2 className="text-xl font-bold text-gray-800 mb-2">
-                  Start a conversation
-                </h2>
-                <p className="text-gray-500 text-center max-w-md mb-6">
-                  Select a chat from the left panel or start a new conversation
-                  to connect with others
-                </p>
-                <div className="my-4">
-                  <input
-                    type="text"
-                    placeholder="Enter group name"
-                    ref={roomNameRef}
-                    className="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm transition-all duration-200 bg-white"
-                  />
-                </div>
-                <div className="flex gap-4">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      const chat = {
-                        id: Math.random(),
-                        name: roomNameRef.current.value,
-                        lastMessage: "Room joined",
-                        time: new Date().toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }),
-                        unread: 0,
-                        type: "groups",
-                        members: [user.name],
-                        messages: [],
-                      };
-                      setChats((prev) => [...prev, chat]);
-                      setSelectedChat(chat);
-                    }}
-                    className="bg-violet-200 text-violet-900 px-4 py-2 rounded-lg hover:bg-violet-400 hover:text-white flex items-center gap-2"
-                  >
-                    <Users className="w-5 h-5" />
-                    Join Group
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => {
-                      const chat = {
-                        id: Math.random(),
-                        name: roomNameRef.current.value,
-                        lastMessage: "Room created",
-                        time: new Date().toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }),
-                        unread: 0,
-                        type: "groups",
-                        members: [user.name],
-                        messages: [],
-                      };
-                      setChats((prev) => [...prev, chat]);
-                      setSelectedChat(chat);
-                    }}
-                    className="bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 flex items-center gap-2"
-                  >
-                    <Plus className="w-5 h-5" />
-                    New Group
-                  </motion.button>
-                </div>
+              <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
+                <MessageCircle size={40} className="text-gray-300 mb-3" />
+                <p>No messages yet. Start a conversation!</p>
               </div>
             )}
-          </motion.div>
-        </AnimatePresence> */}
+          </div>
+          
+          <div className="flex p-3 gap-2 border-t border-gray-200">
+            <input
+              ref={msgRef}
+              type="text"
+              onKeyDown={handleKeyPress}
+              placeholder="Type a message..."
+              className="w-full h-10 border-2 border-gray-300 rounded-lg px-3 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+            />
+            <button
+              className="w-20 h-10 bg-purple-500 text-white rounded-lg hover:bg-purple-600 flex items-center justify-center"
+              onClick={handleSend}
+            >
+              <Send size={18} className="mr-1" />
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </Layout>
   );
